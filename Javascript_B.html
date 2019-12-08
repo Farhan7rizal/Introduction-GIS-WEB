@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Page</title>
+</head>
+
+<body>
+    <div id="col1">
+        <p>Lorem Ipsum</p>
+
+    </div>
+    <div id="col2">
+       
+        <ul id="colorlist">
+            <li>Red</li>
+            <li>Green</li>
+        </ul>
+        <ul id="animallist">
+            <li>Dog</li>
+            <li>Cat</li>
+        </ul>
+    </div>
+    <script>
+        document.body.addEventListener("click", function(e){
+            console.log("clicked in the body");
+            console.log(e);
+//            an anonymous class is one that is not declared outside the context of the code in which 
+//            is being  used , you cannot call this function from anywhere else in the code , it is just 
+//            a block of code that will get executed in response to the click event listener 
+//            open and closing bracket repressing thet entire function as a parameter to the event listener 
+//            and that function is executed when the click event listener occurs
+            
+//            inside anonymous function declaration we have a letter  e  , this will automaticly
+//            create  e  variable that hold the event object within the event handler
+            alert("clicked in the body\nX: " + e.clientX+"\nY: "+ e.clientY);
+            alert(e);
+            
+            
+        });
+        
+    </script>
+
+</body>
+
+</html>

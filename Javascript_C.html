@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Page</title>
+    
+    <style>
+        #colorlist {
+            display: block;
+        }
+        #animallist {
+            display: none;
+        }
+        #switch-list {
+            color: green;
+            background-color: black;
+        }
+        #switch-list:hover{
+            color: black;
+            background-color: green;
+        }
+    
+    </style>
+</head>
+
+<body>
+    <div id="col1">
+        <p>Lorem Ipsum</p>
+
+    </div>
+    <div id="col2">
+       
+        <ul id="colorlist">
+            <li>Red</li>
+            <li>Green</li>
+        </ul>
+        <ul id="animallist">
+            <li>Dog</li>
+            <li>Cat</li>
+        </ul>
+        <button id="switch-list">Switch</button>
+    </div>
+    
+    <script>
+        document.body.children[1].children[2].addEventListener("click", function(e) { // #swict-list:click
+
+            if (document.body.children[1].children[0].style.display != "none") { // #if colorlist is displayed 
+                document.body.children[1].children[0].style.display = "none"; // hide #colorlist
+                document.body.children[1].children[1].style.display = "block"; // show #animallist
+                
+
+            } else {                                                            // else
+                document.body.children[1].children[1].style.display = "none"; // hide #animallist
+                document.body.children[1].children[0].style.display = "block"; // show #colorlist
+            }
+        });
+    </script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+        
+    </head>
+    <body>
+        
+            <input type="date" id="date_found" value="2015-01-01">
+            <br>
+            <select id="current_status">
+                <option value="ACTIVE">Active Nest</option>
+                <option value="INACTIVE">Inactive Nest</option>
+                <option value="FLEDGED">Fledged Nest</option>
+            </select>
+            <br>           
+            <button id="filterSubmit">Button</button>
+            
+            <hr>
+<!--            <div id="resultTable"></div>-->
+            <div id="mapdiv" style="width: 800px;height: 600px"></div>
+            
+        
+    </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.min.js"></script>-->
+    <script>
+        var queryLayer; //declare on the top, because it will remove the query layer, and it will be destroyed when the function is done
+        var mymap = L.map('mapdiv');
+        mymap.setView([39.42,-106.43 ], 11);
+        
+        var backgroundLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
+        mymap.addLayer(backgroundLayer);
+        
+        $("#filterSubmit").click(function(){
+            $.ajax({
+                url:'query_nests_ajax2.php',
+                type:'POST',
+                data:{
+                    date_found: $('#date_found').val(),
+                    current_status: $('#current_status').val()
+                },
+                success: function(response){
+//                    var objResponse = JSON.parse(response);
+//                    var strResponse = "<table class='table table-striped'>";
+//                    strResponse += "<tr><th>Nest</th><th>Date Found</th><th>Last Date Inspected</th><th>Status</th><th>Geometry</th></tr>";
+//                    for (var i=0;i<objResponse.length;i++){
+//                        strResponse += "<td><td>"+objResponse[i].nest_id+"</td>";
+//                        strResponse += "<td>"+objResponse[i].createdate+"</td>";
+//                        strResponse += "<td>"+JSON.stringify(objResponse[i].geom)+"</td></tr>";
+//                    }
+//                    strResponse += "</table>";
+//                    
+//                    $("#resultTable").html(response);
+                    alert(response);
+                    if (queryLayer){
+                        //the first time queryLayer run then will ask to remove
+                        //if querylayer remove
+                        mymap.removeLayer(queryLayer);
+                    }
+                    queryLayer = L.geoJSON(JSON.parse(response), {pointToLayer:function(feature, latlng){
+                        var str = "<h4>"+feature.properties.nest_id+"</h4><hr>";
+                        str += "Found: "+feature.properties.date_found+"<br>";
+                        str += "Location: "+feature.geometry.coordinates[0]+", "+feature.geometry.coordinates[1];
+                        return L.marker(latlng).bindPopup(str);
+                    }}).addTo(mymap);
+                    mymap.fitBounds(queryLayer.getBounds());
+                    
+                }
+            });
+        });
+    </script>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

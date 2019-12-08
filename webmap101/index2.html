@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>web map 101</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="resources/leaflet-ajax-gh-pages/dist/leaflet.ajax.js"></script>
+    <script src="resources/turf.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@5/turf.min.js"></script>
+    <style>
+        
+        
+        
+        #header {
+            height: 75px;
+            background-color: darkgoldenrod;
+        }
+
+        #mapdiv {
+            height: 550px;
+            background-color: salmon;
+        }
+
+        #side_panel {
+            height: 550px;
+            background-color: beige;
+        }
+
+        #footer {
+            height: 75px;
+            background-color: darkgrey;
+        }
+        .attraction {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="row col-md-12">
+        <div id="header" class="col-md-12">
+            <h1 class="text-center">Mexico city</h1>
+        </div>
+        <div id="side-panel" class="col-md-3">
+            <h1 class="text-center">Attractions</h1>
+<!--            <button id="zoomToZocaloo" class="form-control btn-primary">Zocaloo</button>-->
+            <button id="btnBuffer" class="form-control btn-warning attraction">Buffer</button>
+            <button id="btnCircle" class="form-control btn-warning attraction">Circle</button>
+        </div>
+        <div id="mapdiv" class="col-md-9"></div>
+        <div id="footer" class="col-md-12">
+            <h4 id="map_coords" class="text-center">latitude: 19.4 Longitude: -99.1 Zoom Level: 11</h4>
+            <h4 class="text-center"><a href="http://M101.com">M101</a></h4>
+        </div>
+    </div>
+    <script>
+        var mymap = L.map('mapdiv')
+        mymap.setView([19.4, -99.1], 11);
+//         mymap.setView([-7.88294, 113.91050], 15);
+        
+        var backgroundLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
+        mymap.addLayer(backgroundLayer);
+        
+//        var zocaloMarker = L.marker([19.43278, -99.13333]);
+//        zocaloMarker.addTo(mymap);
+//        
+//        zocaloMarker.bindPopup("Zocalo");
+        
+        //chaining method
+        
+//        var zocaloMarker = L.marker([19.43278, -99.13333]).addTo(mymap).bindPopup("<h3 class='text-center'>Zocalo</h3><hr> <a href='https://en.wikipedia.org/wiki/Z%C3%B3calo' target='blank'><img src='img/BicentennialClockZocalo.jpg' width = '200px'alt=''></a> <hr> <a href='https://en.wikipedia.org/wiki/Z%C3%B3calo' target='blank'>Wikipedia</a>"); 
+        
+
+        
+        
+
+        $('#zoomToZocaloo').click(function(){
+           mymap.setView([19.43278, -99.13333], 17);
+        });
+        
+// add buttons for each feature
+        //what we need is to loop through our feature collection for each feature, we need to replace //feature collection is an array of features
+        
+        //we need to build html string that replaces the zocalo specific information with the features specific information and also add button to string that we build 
+        
+        //this method is build by ajax to read a geojson file, and fill the feature and latlng
+        var geojsonLayer = new L.GeoJSON.AJAX('data/attractions2.geojson', {pointToLayer:function(feature, latlng){
+            var str = "<button id='zoomTo"+feature.properties.name.replace(/ /g, '');
+            str += "' class='form-control btn-primary attraction'>";
+            str += feature.properties.name+"</button>";
+            $("#side-panel").append(str);
+            
+        $("#zoomTo"+feature.properties.name.replace(/ /g, '')).click(function(){
+            mymap.setView([latlng.lat, latlng.lng], 17);
+        });
+            
+            var str = "<h4>"+feature.properties.name+"</h4><hr>";
+            str += "<a href='"+feature.properties.web+"' target='blank'>";
+            str += "<img src='img/"+feature.properties.image+"' width='200px'>";
+            str += "</a>";
+            return L.marker(latlng).bindPopup(str);
+        }});
+        geojsonLayer.addTo(mymap);
+        //or//
+        
+//        var geojsonLayer = new L.GeoJSON.AJAX('data/attractions.geojson', {pointToLayer:function(feature, latlng){
+//            var str = "<button id='zoomTo"+feature.properties.name.replace(/ /g, '')+"' class='form-control btn-primary attraction'>"+feature.properties.name+"</button>";
+//            $("#side-panel").append(str);
+//        }})
+        //We move at exact place inside var geojsonLayer
+        
+        //.replace method is replaces all space characters indicated by the spaces between the two forward slashes in the name with an empty string, effectively removing all spaces because some of the name properties have one or more spaces in them and SPACES is not allowed in each HTML id attributes , THIS syntax is little strange , you could use a space between quotes but would only replace the first one 
+        //the forward slashes are regular expression that told the browser to replace all spaces in the string , regular expression are string manipulation shorthand that allow you todo some pretty complicated things with string with a minimum of code but they are difinitely not easy to interpreted by the uninitiated
+        
+//add event handler for each button 
+        
+//        $("#zoomTo"+feature.properties.name.replace(/ /g, '')).click(function(){
+//            mymap.setView([latlng.lat, latlng.lng], 17);
+//        });
+        //we code inside button
+        
+        //now we could dig down it the object hierarchy and call the coordinates array of the geometry property of the feature object but LEAFLET gib=ve us a shrocut access point coordinates with that lat lng object pass to the function every time the lopp is run, and this make the code easier to read         
+        
+//        add external data 
+        //add leaflet.ajax.js and that is server side tech
+        //ajax make communication between server and client
+        //we dont need DB to read data, but we still need ajax to read file and send it to the client
+        // now with ajax we need to load our file from localhost with apache 
+        
+//        Add JS code to read ajax file and add it to the map
+//        var geojsonlayer = new L.GeoJSON.AJAX('attractions.geojson').addTo(mymap);
+        // WHY new keyword included ????
+            //this will load geojson from text file and create map layer with default marker and no edit feature , like popup or toolstips
+        
+//        Add  pointToLayer option that creates the popup for each attraction
+        //method pointToLayer is which basically loop that loops through all the features in the feature collection in the attractions.geojson each loop that function that we create and that function is automatically has available to it, A feature object lat long object containing the coordinates of the points in a function we want
+        
+//        var geojsonLayer = new L.GeoJSON.AJAX('data/attractions.geojson', {pointToLayer:function(feature, latlng){
+//            var str = "<h4>"+feature.properties.name+"</h4><hr>";
+//            str += "<a href='"+feature.properties.web+"' target='blank'>";
+//            str += "<img src='img/"+feature.properties.image+"' width='200px'>";
+//            str += "</a>";
+//            return L.marker(latlng).bindPopup(str);
+//        }});
+//        geojsonLayer.addTo(mymap);
+        
+        //function return will run once for every feature in the feature collection and for each feature it will return a marker at the appropiate location, that we sepecify with a lat lng object and with a pop up that contain HTML that specific to it base on properties in a feature, and that we just build in str variable
+        
+        //Spatial Analysis with turf.js
+        
+        
+//        turf.js contains functions for performing spatial analysis in js, this include tools for creating geojson calculating line , lenght, and areas of polygon , such as buffuring, intersection and more 
+        //because it is js it means that this code can be loaded into your web page and run in browser, so it is ver useful for GIS apps 
+        //turf.js also use geojson as a default input and ...type so integrates very nicely with leaflet 
+        
+        var bufferLayer; //declare outside the function
+        $("#btnBuffer").click(function(){
+            if ($("#btnBuffer").html()=='Buffer'){
+                var bufferedAttractions = turf.buffer(geojsonLayer.toGeoJSON(), 1, {units:"miles"});
+                //toGeoJSON mean ,method to convert a binary object to a geojson 
+                bufferLayer = L.geoJSON(bufferedAttractions).addTo(mymap);
+                //L.geoJSON is create a map layer from a geojson string
+                //and we pass geojson string (bufferedAttractions) directly so we don't need ajax method and addTo mymap
+                $("#btnBuffer").html("Remove Buffer");
+            } else {
+                mymap.removeLayer(bufferLayer);
+                $("#btnBuffer").html("Buffer");
+            }
+        });
+        
+        //example
+//        var center = [-75.343, 39.984];
+//        var radius = 5;
+//        var options = {steps: 10, units: 'kilometers', properties: {foo: 'bar'}};
+//        var circle = turf.circle(center, radius, options);
+        
+        var circleLayer;
+        var radius = 25;
+        var options = {steps: 15, units: 'kilometers', properties: {foo: 'bar'}};
+        var center = [-99.146, 19.418 ]; //one locations
+        $("#btnCircle").click(function(){
+            if ($("#btnCircle").html()=='Circle'){
+                var circledAttractions = turf.circle(center, radius, options);
+                circleLayer = L.geoJSON(circledAttractions).addTo(mymap);
+                $("#btnCircle").html("Remove Circle");
+            } else {
+                mymap.removeLayer(circleLayer);
+                $("#btnCircle").html("Cirlce (Just one time!)")
+            }
+        });
+//        
+//        //Code from Curt's at lecture 56
+//        var bufferLayer;
+////			alert($("#btnBuffer").html());
+//			$("#btnBuffer").click(function(){
+//				if ($("#btnBuffer").html()=='Buffer') {
+////					var bufferedAttractions = turf.buffer(geojsonLayer.toGeoJSON(), 1, 'miles');
+//					var bufferedAttractions = turf.buffer(geojsonLayer.toGeoJSON(), 1, {units:"miles"});
+//					bufferLayer = L.geoJSON(bufferedAttractions).addTo(mymap);
+//					$("#btnBuffer").html("Remove Buffer");
+//				} else { 
+//					mymap.removeLayer(bufferLayer);
+//					$("#btnBuffer").html("Buffer");
+//				}
+//			});
+        
+//        var point = turf.point([-99.133409190626764, 19.432698835750049]);
+//        var buffered = turf.buffer(point, 2, {units: 'miles'});
+//        bufferLayer = L.geoJSON(buffered).addTo(mymap);
+        
+//        var point = turf.point([-99.133409, 19.432698]);
+//        var buffered = turf.buffer(point, 500, {units: 'miles'});
+//
+//        //addToMap
+//        var addToMap = [point, buffered]
+        
+        
+        
+        
+        
+//   ?????????????? how to use on('click)  i dont know   
+//        function onMapZocalo(){
+//            mymap.setView([19.43278, -99.13333], 16);
+//        }
+        
+//        $("zoomToZocalo").on('click', function(e){
+//            mymap.setView([19.43278, -99.13333], 16);
+//        });
+//   ??????????????  wkwkwk ternyata harus ada e. yg artinya of the event object 
+        //wkwkw ternyata salah
+        
+        mymap.on('mousemove',function(e){
+            
+            var str = "Latitude: "+e.latlng.lat.toFixed(5)+" Longitude: "+e.latlng.lng.toFixed(5)+" Zoom Level: "+mymap.getZoom();
+
+            $("#map_coords").html(str);
+        
+        });
+        
+        mymap.on('click',function(e){
+            alert("Latitude: "+e.latlng.lat.toFixed(5)+" Longitude: "+e.latlng.lng.toFixed(5)+" Zoom Level: "+mymap.getZoom());
+          
+//            mymap.setView([19.43278, -99.13333], 16);
+
+            //$("#map_coords").html(str);
+        
+        });
+        
+        
+    </script>
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

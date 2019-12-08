@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Page</title>
+
+    <style>
+        #colorlist {
+            display: block;
+        }
+
+        #animallist {
+            display: none;
+        }
+
+        #switch-list {
+            color: green;
+            background-color: black;
+        }
+
+        #switch-list:hover {
+            color: black;
+            background-color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="col1">
+        <p>Lorem Ipsum</p>
+
+    </div>
+    <div id="col2">
+
+        <ul id="colorlist">
+            <li>Red</li>
+            <li>Green</li>
+        </ul>
+        <ul id="animallist">
+            <li>Dog</li>
+            <li>Cat</li>
+        </ul>
+        <button id="switch-list">Switch</button>
+        <button id="change-color">Change Color</button>
+        <input type="text" id="value1" value="7">
+        <input type="text" id="value2" value="7">
+        <button id="multiply">Multiply</button>
+    </div>
+
+    <script>
+        var btnSwitch = document.getElementById("switch-list");
+        var colorlist = document.getElementById("colorlist");
+        var animallist = document.getElementById("animallist");
+
+
+        btnSwitch.addEventListener("click", function(e) { // #swict-list:click
+
+
+            if (colorlist.style.display != "none") { // #if colorlist is displayed 
+                colorlist.style.display = "none"; // hide #colorlist
+                animallist.style.display = "block"; // show #animallist
+
+
+            } else { // else
+                animallist.style.display = "none"; // hide #animallist
+                colorlist.style.display = "block"; // show #colorlist
+            }
+        });
+
+        var btnChange = document.getElementById("change-color");
+        btnChange.addEventListener("click", function(e) {
+            var col1 = document.getElementById("col1");
+            switch (col1.style.color) {
+                case "red":
+                    col1.style.color = "green";
+                    break;
+                case "green":
+                    col1.style.color = "blue";
+                    break;
+                case "blue":
+                    col1.style.color = "black";
+                    break;
+                case "black":
+                    col1.style.color = "purple";
+                    break;
+                default:
+                    col1.style.color = "red";
+                    break;
+
+            }
+
+        });
+
+        var btnMultiply = document.getElementById("multiply");
+        var inputValue1 = document.getElementById("value1");
+        var inputValue2 = document.getElementById("value2");
+        
+        btnMultiply.addEventListener("click", function(e){
+            
+            var val1 = inputValue1.value;
+            var val2 = inputValue2.value;
+            
+//            alert(val1+" X "+val2+" = "+(val1*val2))
+            
+//            JS validation, NaN is Not a Number, everything in JS is an object even a number
+            
+            if (isNaN(val1) || isNaN(val2)) {
+                    alert("At least one of the values is not a number (NaN)");
+           } else {
+                    alert(val1+" X "+val2+" = "+(val1*val2).toFixed(2));
+//               toFixed is to make decimal number after point
+           } 
+
+        });
+        
+       inputValue1.addEventListener('keyup',function(e){
+           
+           if(isNaN(inputValue1.value)){
+               inputValue1.style.border="2px solid red";
+           } else {
+               inputValue1.style.border="";
+           }
+           
+       });
+        inputValue2.addEventListener('keyup',function(e){
+           
+           if(isNaN(inputValue2.value)){
+               inputValue2.style.border="2px solid red";
+           } else {
+               inputValue2.style.border="";
+           }
+           
+       });
+        
+    </script>
+    
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>

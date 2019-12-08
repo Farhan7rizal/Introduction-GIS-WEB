@@ -1,0 +1,17 @@
+geojson has atype propertie, value is feature, and every feature has a properties object and geometry object, the properties object contain attributes , 4 attributes and 2 attributes , geometry has properties type,coordinates and value is point, latlng.
+
+
+{
+    "type":"feature",
+    "properties":{
+        "id":3,
+        "name":"Yeonhee Park",
+        "image":"Yeonhee.jpg",
+        "web":"https://yeonhee.kr/profile
+    }
+    "geometry":{
+        "type":"Point",
+        "coordinates":[-7.88294, 113.91050]
+    }
+
+}
