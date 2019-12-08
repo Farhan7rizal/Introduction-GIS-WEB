@@ -54,7 +54,13 @@
                     alert(e.latlng.toString());
                 }
                     
-                })
+                });
+                
+                //Right click pressed
+                mymap.on('contextmenu', function(e){
+                    var dtCurrentTime = new Date();
+                    L.marker(e.latlng).addTo(mymap).bindPopup(e.latlng.toString()+"<br>"+dtCurrentTime.toString()); 
+                });
             });
             
         </script>
