@@ -43,8 +43,17 @@
                 
                 //add mouse event
                 mymap.on('click', function(e){
-                    console.log(e);
+//                    console.log(e);
+//                    alert(e.latlng.toString());
+                    
+                //Original Event + Key   
+                //Shift key pressed                
+                if (e.originalEvent.shiftKey) {
+                    alert("Zoom Level:"+mymap.getZoom());
+                } else {
                     alert(e.latlng.toString());
+                }
+                    
                 })
             });
             
