@@ -40,6 +40,12 @@
                 mymap = L.map('mapdiv', {center:[19.4, -99.2], zoom:13,zoomControl:false, dragging:false, minZoom:10, maxZoom:14});
                 lyrOSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
                 mymap.addLayer(lyrOSM);
+                
+                //add mouse event
+                mymap.on('click', function(e){
+                    console.log(e);
+                    alert(e.latlng.toString());
+                })
             });
             
         </script>
