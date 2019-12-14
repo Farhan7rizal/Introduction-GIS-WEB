@@ -83,8 +83,11 @@
                        mrkCurrentLocation.remove(); 
                         //remove the marker and create a new marker
                     }                    
-                    mrkCurrentLocation = L.circleMarker(e.latlng).addTo(mymap); //add marker to location found
-                    mymap.setView(e.latlng, 14);
+//                    mrkCurrentLocation = L.circleMarker(e.latlng).addTo(mymap); //add marker to location found
+                    mrkCurrentLocation = L.circle(e.latlng, {radius:e.accuracy/2}).addTo(mymap);
+                    // circle have a radius, accuracy, the different is when you zoom in/out the radius will change, but circle marker is not
+                    // --- ACCURACY IS REPORTED BY METERS ---
+                    mymap.setView(e.latlng, 18);
                     
                     //To make it happen set dragging to true
                 });
