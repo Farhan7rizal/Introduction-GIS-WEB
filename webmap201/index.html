@@ -42,6 +42,11 @@
                 lyrOSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
                 mymap.addLayer(lyrOSM);
                 
+                setInterval(function(){
+                    //every 5 second is gonna call the locate methodof the map object
+                    mymap.locate();
+                }, 5000)
+                
                 //add mouse event
                 mymap.on('click', function(e){
 //                    console.log(e);
@@ -76,6 +81,7 @@
                     if (mrkCurrentLocation) {
                         // if mrkCurrentLocation is set
                        mrkCurrentLocation.remove(); 
+                        //remove the marker and create a new marker
                     }                    
                     mrkCurrentLocation = L.circleMarker(e.latlng).addTo(mymap); //add marker to location found
                     mymap.setView(e.latlng, 14);
