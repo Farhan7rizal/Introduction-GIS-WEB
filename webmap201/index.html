@@ -35,6 +35,7 @@
         <script>
             var mymap;
             var lyrOSM;
+            var mrkCurrentLocation;
             
             $(document).ready(function(){
                 mymap = L.map('mapdiv', {center:[19.4, -99.2], zoom:13});
@@ -72,7 +73,11 @@
                 // After it make another event handler
                 mymap.on('locationfound', function(e){
                     console.log(e);
-                    L.circleMarker(e.latlng).addTo(mymap); //add marker to location found
+                    if (mrkCurrentLocation) {
+                        // if mrkCurrentLocation is set
+                       mrkCurrentLocation.remove(); 
+                    }                    
+                    mrkCurrentLocation = L.circleMarker(e.latlng).addTo(mymap); //add marker to location found
                     mymap.setView(e.latlng, 14);
                     
                     //To make it happen set dragging to true
