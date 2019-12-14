@@ -37,7 +37,7 @@
             var lyrOSM;
             
             $(document).ready(function(){
-                mymap = L.map('mapdiv', {center:[19.4, -99.2], zoom:13,zoomControl:false, dragging:false, minZoom:10, maxZoom:14});
+                mymap = L.map('mapdiv', {center:[19.4, -99.2], zoom:13});
                 lyrOSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
                 mymap.addLayer(lyrOSM);
                 
@@ -61,6 +61,30 @@
                     var dtCurrentTime = new Date();
                     L.marker(e.latlng).addTo(mymap).bindPopup(e.latlng.toString()+"<br>"+dtCurrentTime.toString()); 
                 });
+                
+                mymap.on('keypress ', function(e){
+//                   console.log(e); //to see an event object contain
+                    if (e.originalEvent.key=="l") {
+                        mymap.locate(); //it calls the OS location services to find out the device locatated
+                            // if it find a location it triger a location found event, if it does not find a location then it triggers a location error event
+                    }
+                });
+                // After it make another event handler
+                mymap.on('locationfound', function(e){
+                    console.log(e);
+                    L.circleMarker(e.latlng).addTo(mymap); //add marker to location found
+                    mymap.setView(e.latlng, 14);
+                    
+                    //To make it happen set dragging to true
+                });
+                
+                //Also always handle the location error
+                mymap.on('locationerror', function(e){
+                    console.log(e);
+                    alert("location was not found");
+                });
+                
+                //6 m
             });
             
         </script>
