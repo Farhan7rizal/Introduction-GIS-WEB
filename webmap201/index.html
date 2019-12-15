@@ -10,12 +10,18 @@
     <script src="src/jquery-3.4.1.min.js"></script>
     <style>
         #mapdiv {
-            height: 775px;
+            height: 735px;
             background-color: salmon;
             /*
                 height: 97.9vh;
                 background-color: salmon;
 */
+
+        }
+
+        #header {
+            height: 50px;
+            background-color: darkgoldenrod;
         }
     </style>
 </head>
@@ -27,15 +33,21 @@
         <div id="mapdiv" class="col-md-9"></div>
         kebaliks
 -->
-    <div class="row">
+    <div class="row col-md-12">
+        <div id="header" class="col-md-12">
+            <h1 class="text-center">Leaflet</h1>
+        </div>
 
-        <div class="col-md-3 col-md-pull-9">
+        <div class="col-md-3">
+            <button id="btnLocate" class="btn btn-primary btn-block">Locate</button>
+            <button id="btnZocalo">ZoomToZocalo</button>
             <h4> Zoom Level: <span id='zoom-level'></span></h4>
             <h4> Map Center: <span id='map-center'></span></h4>
             <h4> Mouse Location: <span id='mouse-location'></span></h4>
             <!--                add id so we can select with JQUERY and add content to it-->
         </div>
-        <div id="mapdiv" class="col-md-9 col-md-push-3"></div>
+        <div id="mapdiv" class="col-md-9"></div>
+
     </div>
 
 
@@ -125,6 +137,14 @@
                 //                    $("#mouse-location").html(e.latlng.toString()); 
                 // passing the funtion and 
                 $("#mouse-location").html(LatLngToArrayString(e.latlng));
+            });
+
+            $("#btnLocate").click(function() {
+                mymap.locate();
+            });
+
+            $("#btnZocalo").click(function() {
+                mymap.setView([-8.16150, 113.72644], 17);
             });
 
             //
