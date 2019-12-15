@@ -109,16 +109,23 @@
                 });
                 
                 mymap.on('moveend', function(){
-                   $("#map-center").html(mymap.getCenter().toString());
+                   $("#map-center").html(LatLngToArrayString(mymap.getCenter()));
                     // convert to string (to show)
                 });
                 
                 mymap.on('mousemove', function(e){
-                   $("#mouse-location").html(e.latlng.toString()); 
+                    // passing the funtion and 
+                   $("#mouse-location").html(LatLngToArrayString(e.latlng)); 
                 });
                 
                 //
             });
+            
+            function LatLngToArrayString(ll) {
+                //  this funtion take a latlng object
+                //to return latitude and longitude in single array
+                return "["+ll.lat.toFixed(5)+", "+ll.lng.toFixed(5)+"]";
+            }
             
         </script>
     </body>
