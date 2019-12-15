@@ -1,532 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Webmap 201</title>
-        <link rel="stylesheet" href="src/leaflet.css">
-        <link rel="stylesheet" href="src/css/bootstrap.css">
-        <script src="src/leaflet-src.js"></script>
-        <script src="src/jquery-3.4.1.min.js"></script>
-        <style>
-            #mapdiv {
-                height: 775px;
+
+<head>
+    <meta charset="UTF-8">
+    <title>Webmap 201</title>
+    <link rel="stylesheet" href="src/leaflet.css">
+    <link rel="stylesheet" href="src/css/bootstrap.css">
+    <script src="src/leaflet-src.js"></script>
+    <script src="src/jquery-3.4.1.min.js"></script>
+    <style>
+        #mapdiv {
+            height: 775px;
             background-color: salmon;
-/*
+            /*
                 height: 97.9vh;
                 background-color: salmon;
 */
-            }
-        </style>
-    </head>
-    <body>
-       <!--    100vh mean 100% of the viewport height   -->
-<!--
+        }
+    </style>
+</head>
+
+<body>
+    <!--    100vh mean 100% of the viewport height   -->
+    <!--
         <div id="side-bar" class="col-md-3"></div>
         <div id="mapdiv" class="col-md-9"></div>
         kebaliks
 -->
-        <div class="row">
+    <div class="row">
 
-            <div class="col-md-3 col-md-pull-9">
-                <h4> Zoom Level: <span id='zoom-level'></span></h4>
-                <h4> Map Center: <span id='map-center'></span></h4>
-                <h4> Mouse Location: <span id='mouse-location'></span></h4>
-<!--                add id so we can select with JQUERY and add content to it-->
-            </div>
-            <div id="mapdiv" class="col-md-9 col-md-push-3"></div>
+        <div class="col-md-3 col-md-pull-9">
+            <h4> Zoom Level: <span id='zoom-level'></span></h4>
+            <h4> Map Center: <span id='map-center'></span></h4>
+            <h4> Mouse Location: <span id='mouse-location'></span></h4>
+            <!--                add id so we can select with JQUERY and add content to it-->
         </div>
-       
-        
-        <script>
-            var mymap;
-            var lyrOSM;
-            var mrkCurrentLocation;
-            
-            $(document).ready(function(){
-                mymap = L.map('mapdiv', {center:[19.4, -99.2], zoom:13});
-                lyrOSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
-                mymap.addLayer(lyrOSM);
-                
-//                setInterval(function(){
-//                    //every 5 second is gonna call the locate methodof the map object
-//                    mymap.locate();
-//                }, 5000)
-                
-                //add mouse event
-                mymap.on('click', function(e){
-//                    console.log(e);
-//                    alert(e.latlng.toString());
-                    
+        <div id="mapdiv" class="col-md-9 col-md-push-3"></div>
+    </div>
+
+
+    <script>
+        var mymap;
+        var lyrOSM;
+        var mrkCurrentLocation;
+
+        $(document).ready(function() {
+            mymap = L.map('mapdiv', {
+                center: [19.4, -99.2],
+                zoom: 13
+            });
+            lyrOSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
+            mymap.addLayer(lyrOSM);
+
+            //                setInterval(function(){
+            //                    //every 5 second is gonna call the locate methodof the map object
+            //                    mymap.locate();
+            //                }, 5000)
+
+            //add mouse event
+            mymap.on('click', function(e) {
+                //                    console.log(e);
+                //                    alert(e.latlng.toString());
+
                 //Original Event + Key   
                 //Shift key pressed                
                 if (e.originalEvent.shiftKey) {
-                    alert("Zoom Level:"+mymap.getZoom());
+                    alert("Zoom Level:" + mymap.getZoom());
                 } else {
                     alert(e.latlng.toString());
                 }
-                    
-                });
-                
-                //Right click pressed
-                mymap.on('contextmenu', function(e){
-                    var dtCurrentTime = new Date();
-                    L.marker(e.latlng).addTo(mymap).bindPopup(e.latlng.toString()+"<br>"+dtCurrentTime.toString()); 
-                });
-                
-                mymap.on('keypress ', function(e){
-//                   console.log(e); //to see an event object contain
-                    if (e.originalEvent.key=="l") {
-                        mymap.locate(); //it calls the OS location services to find out the device locatated
-                            // if it find a location it triger a location found event, if it does not find a location then it triggers a location error event
-                    }
-                });
-                // After it make another event handler
-                mymap.on('locationfound', function(e){
-                    console.log(e);
-                    if (mrkCurrentLocation) {
-                        // if mrkCurrentLocation is set
-                       mrkCurrentLocation.remove(); 
-                        //remove the marker and create a new marker
-                    }                    
-//                    mrkCurrentLocation = L.circleMarker(e.latlng).addTo(mymap); //add marker to location found
-                    mrkCurrentLocation = L.circle(e.latlng, {radius:e.accuracy/2}).addTo(mymap);
-                    // circle have a radius, accuracy, the different is when you zoom in/out the radius will change, but circle marker is not
-                    // --- ACCURACY IS REPORTED BY METERS ---
-                    mymap.setView(e.latlng, 18);
-                    
-                    //To make it happen set dragging to true
-                });
-                
-                //Also always handle the location error
-                mymap.on('locationerror', function(e){
-                    console.log(e);
-                    alert("location was not found");
-                });
-                
-                mymap.on('zoomend', function(){
-                    //zoomend is gets fired continously as you're zooming ... 
-                   $("#zoom-level").html(mymap.getZoom()); 
-                });
-                
-                mymap.on('moveend', function(){
-//                    $("#map-center").html(mymap.getCenter().toString());
-                    // convert to string (to show)
-                   $("#map-center").html(LatLngToArrayString(mymap.getCenter()));
-                });
-                
-                mymap.on('mousemove', function(e){
-//                    $("#mouse-location").html(e.latlng.toString()); 
-                    // passing the funtion and 
-                   $("#mouse-location").html(LatLngToArrayString(e.latlng)); 
-                });
-                
-                //
+
             });
-            
-            function LatLngToArrayString(ll) {
-                //  this funtion take a latlng object
-                //to return latitude and longitude in single array
-                return "["+ll.lat.toFixed(5)+", "+ll.lng.toFixed(5)+"]";
-            }
-            
-        </script>
-    </body>
+
+            //Right click pressed
+            mymap.on('contextmenu', function(e) {
+                var dtCurrentTime = new Date();
+                L.marker(e.latlng).addTo(mymap).bindPopup(e.latlng.toString() + "<br>" + dtCurrentTime.toString());
+            });
+
+            mymap.on('keypress ', function(e) {
+                //                   console.log(e); //to see an event object contain
+                if (e.originalEvent.key == "l") {
+                    mymap.locate(); //it calls the OS location services to find out the device locatated
+                    // if it find a location it triger a location found event, if it does not find a location then it triggers a location error event
+                }
+            });
+            // After it make another event handler
+            mymap.on('locationfound', function(e) {
+                console.log(e);
+                if (mrkCurrentLocation) {
+                    // if mrkCurrentLocation is set
+                    mrkCurrentLocation.remove();
+                    //remove the marker and create a new marker
+                }
+                //                    mrkCurrentLocation = L.circleMarker(e.latlng).addTo(mymap); //add marker to location found
+                mrkCurrentLocation = L.circle(e.latlng, {
+                    radius: e.accuracy / 2
+                }).addTo(mymap);
+                // circle have a radius, accuracy, the different is when you zoom in/out the radius will change, but circle marker is not
+                // --- ACCURACY IS REPORTED BY METERS ---
+                mymap.setView(e.latlng, 18);
+
+                //To make it happen set dragging to true
+            });
+
+            //Also always handle the location error
+            mymap.on('locationerror', function(e) {
+                console.log(e);
+                alert("location was not found");
+            });
+
+            mymap.on('zoomend', function() {
+                //zoomend is gets fired continously as you're zooming ... 
+                $("#zoom-level").html(mymap.getZoom());
+            });
+
+            mymap.on('moveend', function() {
+                //                    $("#map-center").html(mymap.getCenter().toString());
+                // convert to string (to show)
+                $("#map-center").html(LatLngToArrayString(mymap.getCenter()));
+            });
+
+            mymap.on('mousemove', function(e) {
+                //                    $("#mouse-location").html(e.latlng.toString()); 
+                // passing the funtion and 
+                $("#mouse-location").html(LatLngToArrayString(e.latlng));
+            });
+
+            //
+        });
+
+        function LatLngToArrayString(ll) {
+            //  this funtion take a latlng object
+            //to return latitude and longitude in single array
+            return "[" + ll.lat.toFixed(5) + ", " + ll.lng.toFixed(5) + "]";
+        }
+    </script>
+</body>
+
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
