@@ -27,7 +27,12 @@
 -->
         <div class="row">
 
-            <div class="col-md-3 col-md-pull-9"></div>
+            <div class="col-md-3 col-md-pull-9">
+                <h4> Zoom Level: <span id='zoom-level'></span></h4>
+                <h4> Map Center: <span id='map-center'></span></h4>
+                <h4> Mouse Location: <span id='mouse-location'></span></h4>
+<!--                add id so we can select with JQUERY and add content to it-->
+            </div>
             <div id="mapdiv" class="col-md-9 col-md-push-3"></div>
         </div>
        
@@ -98,7 +103,21 @@
                     alert("location was not found");
                 });
                 
-                //6 m
+                mymap.on('zoomend', function(){
+                    //zoomend is gets fired continously as you're zooming ... 
+                   $("#zoom-level").html(mymap.getZoom()); 
+                });
+                
+                mymap.on('moveend', function(){
+                   $("#map-center").html(mymap.getCenter().toString());
+                    // convert to string (to show)
+                });
+                
+                mymap.on('mousemove', function(e){
+                   $("#mouse-location").html(e.latlng.toString()); 
+                });
+                
+                //
             });
             
         </script>
