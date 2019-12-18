@@ -55,7 +55,8 @@
         var mymap;
         var lyrOSM;
         var mrkCurrentLocation;
-
+        var popZocalo;
+        
         $(document).ready(function() {
             mymap = L.map('mapdiv', {
                 center: [19.4, -99.2],
@@ -68,7 +69,11 @@
             //                    //every 5 second is gonna call the locate methodof the map object
             //                    mymap.locate();
             //                }, 5000)
-
+            
+            popZocalo = L.popup();
+            popZocalo.setLatLng([-8.16150, 113.72644]);
+            popZocalo.setContent("<h2>Zocalo</h2><img src='img/zocalo.jpg'  width='200px'>"); //set content
+            
             //add mouse event
             mymap.on('click', function(e) {
                 //                    console.log(e);
@@ -145,6 +150,7 @@
 
             $("#btnZocalo").click(function() {
                 mymap.setView([-8.16150, 113.72644], 17);
+                mymap.openPopup(popZocalo); 
             });
 
             //
