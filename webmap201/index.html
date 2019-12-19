@@ -38,9 +38,9 @@
             <h1 class="text-center">Leaflet</h1>
         </div>
 
-        <div id="side-bar" >
+<!--        <div id="side-bar" >-->
 <!--        using this without boostrap, to ... something in popup-->
-<!--        <div id="side-bar" class="col-md-3">-->
+        <div id="side-bar" class="col-md-3">
             <button id="btnLocate" class="btn btn-primary btn-block">Locate</button>
             <button id="btnZocalo" class="btn btn-primary btn-block">ZoomToZocalo</button>
             <h4> Zoom Level: <span id='zoom-level'></span></h4>
@@ -59,11 +59,12 @@
         var mrkCurrentLocation;
         var popZocalo;
         var popExample;
+        var ctlZoom;
         
         $(document).ready(function() {
             mymap = L.map('mapdiv', {
                 center: [19.4, -99.2],
-                zoom: 13
+                zoom: 13, zoomControl:false
             });
             lyrOSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
             mymap.addLayer(lyrOSM);
@@ -73,17 +74,20 @@
             //                    mymap.locate();
             //                }, 5000)
             
+            ctlZoom = L.control.zoom({zoomInText:'In',zoomOutText:'Out',position:'topright'});
+            ctlZoom.addTo(mymap);
+            
             popZocalo = L.popup({maxWidth:150,keepInView:true});
             //keepInView = keep the popup in view , if you're panning it's turn again to popup
             popZocalo.setLatLng([-8.16150, 113.72644]);
             popZocalo.setContent("<h2>Zocalo</h2><img src='img/zocalo.jpg'  width='150px'>"); //set content
             
-            popExample = L.popup();
-            popExample.setLatLng([-8.16150, 113.72644]);
-            popExample.setContent($("#side-bar")[0]);
-            //when we select something in jquery it doesn't actually retrieve the DOM element it self it retrieve a specific jquery element it's actually an array of DOM elements.
-            //to get the actual DOM element itself, it is only a single one , we can use an array notation zero [0] to get actual DOM element
-            popExample.openOn(mymap);
+//            popExample = L.popup();
+//            popExample.setLatLng([-8.16150, 113.72644]);
+//            popExample.setContent($("#side-bar")[0]);
+//            //when we select something in jquery it doesn't actually retrieve the DOM element it self it retrieve a specific jquery element it's actually an array of DOM elements.
+//            //to get the actual DOM element itself, it is only a single one , we can use an array notation zero [0] to get actual DOM element
+//            popExample.openOn(mymap);
             
             
             
