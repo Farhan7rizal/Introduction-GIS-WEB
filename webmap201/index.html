@@ -6,8 +6,14 @@
     <title>Webmap 201</title>
     <link rel="stylesheet" href="src/leaflet.css">
     <link rel="stylesheet" href="src/css/bootstrap.css">
+    <link rel="stylesheet" href="src/plugins/L.Control.Pan.css">
+    <link rel="stylesheet" href="src/plugins/L.Control.Zoomslider.css">
+<!--    be carefull with linux because linux is case sensitive-->
+    
     <script src="src/leaflet-src.js"></script>
     <script src="src/jquery-3.4.1.min.js"></script>
+    <script src="src/plugins/L.Control.Pan.js"></script>
+    <script src="src/plugins/L.Control.Zoomslider.js"></script>
     <style>
         #mapdiv {
             height: 735px;
@@ -59,9 +65,11 @@
         var mrkCurrentLocation;
         var popZocalo;
         var popExample;
-        var ctlZoom;
+//        var ctlZoom;
         var ctlAttribute;
         var ctlScale;
+        var ctlPan;
+        var ctlZoomslider
         
         $(document).ready(function() {
             mymap = L.map('mapdiv', {
@@ -76,9 +84,14 @@
             //                    mymap.locate();
             //                }, 5000)
             
-            ctlZoom = L.control.zoom({zoomInText:'In',zoomOutText:'Out',
-            position:'topright'});
-            ctlZoom.addTo(mymap);
+            ctlPan = L.control.pan({position:'bottomright'}).addTo(mymap);
+            ctlZoomslider = L.control.zoomslider({position:'topright'}).addTo(mymap);
+            // because it is extending to the Leflet control class, and will have position options
+            
+            
+//            ctlZoom = L.control.zoom({zoomInText:'In',zoomOutText:'Out',
+//            position:'topright'});
+//            ctlZoom.addTo(mymap);
             
             ctlAttribute = L.control.attribution({position:'bottomleft'}).addTo(mymap);
             ctlAttribute.addAttribution('OSM');
