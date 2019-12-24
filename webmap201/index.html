@@ -61,6 +61,7 @@
         var popExample;
         var ctlZoom;
         var ctlAttribute;
+        var ctlScale;
         
         $(document).ready(function() {
             mymap = L.map('mapdiv', {
@@ -82,6 +83,8 @@
             ctlAttribute = L.control.attribution({position:'bottomleft'}).addTo(mymap);
             ctlAttribute.addAttribution('OSM');
             ctlAttribute.addAttribution('&copy;<a href="https://www.google.com/">Link</a>');
+            
+            ctlScale = L.control.scale({position:'bottomleft', metric:false, maxWidth:200}).addTo(mymap);
             
             popZocalo = L.popup({maxWidth:150,keepInView:true});
             //keepInView = keep the popup in view , if you're panning it's turn again to popup
