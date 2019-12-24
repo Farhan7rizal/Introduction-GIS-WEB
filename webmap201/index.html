@@ -8,12 +8,16 @@
     <link rel="stylesheet" href="src/css/bootstrap.css">
     <link rel="stylesheet" href="src/plugins/L.Control.Pan.css">
     <link rel="stylesheet" href="src/plugins/L.Control.Zoomslider.css">
+    <link rel="stylesheet" href="src/plugins/L.Control.MousePosition.css">
+    <link rel="stylesheet" href="src/plugins/Leaflet.PolylineMeasure.css">
 <!--    be carefull with linux because linux is case sensitive-->
     
     <script src="src/leaflet-src.js"></script>
     <script src="src/jquery-3.4.1.min.js"></script>
     <script src="src/plugins/L.Control.Pan.js"></script>
     <script src="src/plugins/L.Control.Zoomslider.js"></script>
+    <script src="src/plugins/L.Control.MousePosition.js"></script>
+    <script src="src/plugins/Leaflet.PolylineMeasure.js"></script>
     <style>
         #mapdiv {
             height: 735px;
@@ -69,7 +73,9 @@
         var ctlAttribute;
         var ctlScale;
         var ctlPan;
-        var ctlZoomslider
+        var ctlZoomslider;
+        var ctlMouseposition;
+        var ctlMeasure;
         
         $(document).ready(function() {
             mymap = L.map('mapdiv', {
@@ -86,6 +92,8 @@
             
             ctlPan = L.control.pan({position:'bottomright'}).addTo(mymap);
             ctlZoomslider = L.control.zoomslider({position:'topright'}).addTo(mymap);
+            ctlMouseposition = L.control.mousePosition().addTo(mymap);
+            ctlMeasure = L.control.polylineMeasure().addTo(mymap);
             // because it is extending to the Leflet control class, and will have position options
             
             
@@ -115,19 +123,19 @@
             
             
             //add mouse event
-            mymap.on('click', function(e) {
-                //                    console.log(e);
-                //                    alert(e.latlng.toString());
-
-                //Original Event + Key   
-                //Shift key pressed                
-                if (e.originalEvent.shiftKey) {
-                    alert("Zoom Level:" + mymap.getZoom());
-                } else {
-                    alert(e.latlng.toString());
-                }
-
-            });
+//            mymap.on('click', function(e) {
+//                //                    console.log(e);
+//                //                    alert(e.latlng.toString());
+//
+//                //Original Event + Key   
+//                //Shift key pressed                
+//                if (e.originalEvent.shiftKey) {
+//                    alert("Zoom Level:" + mymap.getZoom());
+//                } else {
+//                    alert(e.latlng.toString());
+//                }
+//
+//            });
 
             //Right click pressed
             mymap.on('contextmenu', function(e) {
