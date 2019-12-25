@@ -5,11 +5,16 @@
     <meta charset="UTF-8">
     <title>Webmap 201</title>
     <link rel="stylesheet" href="src/leaflet.css">
+<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">-->
     <link rel="stylesheet" href="src/css/bootstrap.css">
     <link rel="stylesheet" href="src/plugins/L.Control.Pan.css">
     <link rel="stylesheet" href="src/plugins/L.Control.Zoomslider.css">
     <link rel="stylesheet" href="src/plugins/L.Control.MousePosition.css">
+    <link rel="stylesheet" href="src/plugins/L.Control.Sidebar.css">
     <link rel="stylesheet" href="src/plugins/Leaflet.PolylineMeasure.css">
+    <link rel="stylesheet" href="src/plugins/easy-button.css">
+    
+    <link rel="stylesheet" href="src/bootstrap4-glyphicons/css/bootstrap-glyphicons.min.css">
 <!--    be carefull with linux because linux is case sensitive-->
     
     <script src="src/leaflet-src.js"></script>
@@ -17,7 +22,9 @@
     <script src="src/plugins/L.Control.Pan.js"></script>
     <script src="src/plugins/L.Control.Zoomslider.js"></script>
     <script src="src/plugins/L.Control.MousePosition.js"></script>
+    <script src="src/plugins/L.Control.Sidebar.js"></script>
     <script src="src/plugins/Leaflet.PolylineMeasure.js"></script>
+    <script src="src/plugins/easy-button.js"></script>
     <style>
         #mapdiv {
             height: 735px;
@@ -50,15 +57,17 @@
 
 <!--        <div id="side-bar" >-->
 <!--        using this without boostrap, to ... something in popup-->
-        <div id="side-bar" class="col-md-3">
+        <div id="side-bar" class="col-md-12">
+           
             <button id="btnLocate" class="btn btn-primary btn-block">Locate</button>
             <button id="btnZocalo" class="btn btn-primary btn-block">ZoomToZocalo</button>
             <h4> Zoom Level: <span id='zoom-level'></span></h4>
             <h4> Map Center: <span id='map-center'></span></h4>
             <h4> Mouse Location: <span id='mouse-location'></span></h4>
+            
             <!--                add id so we can select with JQUERY and add content to it-->
         </div>
-        <div id="mapdiv" class="col-md-9"></div>
+        <div id="mapdiv" class="col-md-12"></div>
 
     </div>
 
@@ -76,6 +85,8 @@
         var ctlZoomslider;
         var ctlMouseposition;
         var ctlMeasure;
+        var ctlEasybutton;
+        var ctlSidebar;
         
         $(document).ready(function() {
             mymap = L.map('mapdiv', {
@@ -91,9 +102,20 @@
             //                }, 5000)
             
             ctlPan = L.control.pan({position:'bottomright'}).addTo(mymap);
+            
             ctlZoomslider = L.control.zoomslider({position:'topright'}).addTo(mymap);
+            
             ctlMouseposition = L.control.mousePosition().addTo(mymap);
+            
             ctlMeasure = L.control.polylineMeasure().addTo(mymap);
+            
+            ctlSidebar = L.control.sidebar('side-bar').addTo(mymap);
+            
+            ctlEasybutton = L.easyButton('glyphicon-transfer', function(){
+//                mymap.locate();
+                ctlSidebar.toggle();
+                //change col-md-.. to resize
+            }).addTo(mymap);
             // because it is extending to the Leflet control class, and will have position options
             
             
@@ -106,6 +128,8 @@
             ctlAttribute.addAttribution('&copy;<a href="https://www.google.com/">Link</a>');
             
             ctlScale = L.control.scale({position:'bottomleft', metric:false, maxWidth:200}).addTo(mymap);
+            
+            
             
             popZocalo = L.popup({maxWidth:150,keepInView:true});
             //keepInView = keep the popup in view , if you're panning it's turn again to popup
@@ -143,7 +167,7 @@
                 L.marker(e.latlng).addTo(mymap).bindPopup(e.latlng.toString() + "<br>" + dtCurrentTime.toString());
             });
 
-            mymap.on('keypress ', function(e) {
+            mymap.on('keypress', function(e) {
                 //                   console.log(e); //to see an event object contain
                 if (e.originalEvent.key == "l") {
                     mymap.locate(); //it calls the OS location services to find out the device locatated
