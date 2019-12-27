@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="src/plugins/L.Control.Sidebar.css">
     <link rel="stylesheet" href="src/plugins/Leaflet.PolylineMeasure.css">
     <link rel="stylesheet" href="src/plugins/easy-button.css">
+    <link rel="stylesheet" href="src/plugins/leaflet-opencage/src/css/L.Control.OpenCageSearch.css">
     
     <link rel="stylesheet" href="src/bootstrap4-glyphicons/css/bootstrap-glyphicons.min.css">
 <!--    be carefull with linux because linux is case sensitive-->
@@ -25,6 +26,7 @@
     <script src="src/plugins/L.Control.Sidebar.js"></script>
     <script src="src/plugins/Leaflet.PolylineMeasure.js"></script>
     <script src="src/plugins/easy-button.js"></script>
+    <script src="src/plugins/leaflet-opencage/src/js/L.Control.OpenCageSearch.js"></script>
     <style>
         #mapdiv {
             height: 735px;
@@ -87,6 +89,7 @@
         var ctlMeasure;
         var ctlEasybutton;
         var ctlSidebar;
+        var ctlSearch;
         
         $(document).ready(function() {
             mymap = L.map('mapdiv', {
@@ -94,7 +97,12 @@
                 zoom: 13, zoomControl:false,attributionControl:false
             });
             lyrOSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
+            lyrGoogle = L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}');
             mymap.addLayer(lyrOSM);
+            
+            
+            
+            
 
             //                setInterval(function(){
             //                    //every 5 second is gonna call the locate methodof the map object
@@ -116,6 +124,8 @@
                 ctlSidebar.toggle();
                 //change col-md-.. to resize
             }).addTo(mymap);
+            
+            ctlSearch = L.Control.openCageSearch({key:'164e1b34050d4f7e9a0f3de89a5bda04',limit: 10}).addTo(mymap);//OSM Geocoding services
             // because it is extending to the Leflet control class, and will have position options
             
             
