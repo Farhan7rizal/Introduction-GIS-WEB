@@ -26,6 +26,7 @@
     <script src="src/plugins/L.Control.Sidebar.js"></script>
     <script src="src/plugins/Leaflet.PolylineMeasure.js"></script>
     <script src="src/plugins/easy-button.js"></script>
+    <script src="src/plugins/leaflet-providers.js"></script>
     <script src="src/plugins/leaflet-opencage/src/js/L.Control.OpenCageSearch.js"></script>
     <style>
         #mapdiv {
@@ -77,6 +78,15 @@
     <script>
         var mymap;
         var lyrOSM;
+        var lyrWatercolor;
+        var lyrTopo;
+        var lyrImagery;
+        var lyrOutdoors;
+        var lyrPoltekJember;
+        var lyrUnet1;
+        var lyrUnet2;
+        var lyrUnet3;
+        var lyrUnet4;
         var mrkCurrentLocation;
         var popZocalo;
         var popExample;
@@ -90,16 +100,51 @@
         var ctlEasybutton;
         var ctlSidebar;
         var ctlSearch;
+        var ctlLayers;
+        var objBasemaps;
+        var objOverlays;
         
         $(document).ready(function() {
             mymap = L.map('mapdiv', {
                 center: [19.4, -99.2],
                 zoom: 13, zoomControl:false,attributionControl:false
             });
-            lyrOSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
+//            lyrOSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
+            lyrOSM = L.tileLayer.provider('OpenStreetMap.Mapnik');            
+            lyrTopo = L.tileLayer.provider('OpenTopoMap');
+            lyrImagery = L.tileLayer.provider('Esri.WorldImagery');
+            lyrOutdoors = L.tileLayer.provider('Thunderforest.Outdoors');
+            lyrWatercolor = L.tileLayer.provider('Stamen.Watercolor');
+            
             lyrGoogle = L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}');
             mymap.addLayer(lyrOSM);
             
+            
+            lyrPoltekJember = L.imageOverlay('img/PoletekRasterLayer3jadi.PNG', [[-8.154097, 113.719472],[-8.161585, 113.726757]], {opacity:0.5}).addTo(mymap);
+            
+            lyrUnet1 = L.imageOverlay('img/Unet1jadi.PNG', [[-8.158042, 113.714356],[-8.163717, 113.724237]]).addTo(mymap);
+            lyrUnet2 = L.imageOverlay('img/Unet2jadi.PNG', [[-8.163717, 113.724237],[-8.170241, 113.714942]]).addTo(mymap);
+            lyrUnet3 = L.imageOverlay('img/Unet3jadi.PNG', [[-8.170241, 113.714942],[-8.163713, 113.710393]]).addTo(mymap);
+            lyrUnet4 = L.imageOverlay('img/Unet4jadi.PNG', [[-8.163713, 113.714348],[-8.161144, 113.712687]]).addTo(mymap);
+         
+            objBasemaps = {
+                "Open Street Maps": lyrOSM,
+                "Topo Map": lyrTopo,
+                "Imagery": lyrImagery,
+                "Outdoors":lyrOutdoors,
+                "Watercolor": lyrWatercolor,
+                "Google Maps": lyrGoogle
+            };
+            
+            objOverlays = {
+                "PoltekJember Image":lyrPoltekJember,
+                "Unet1 Image":lyrUnet1,
+                "Unet2 Image":lyrUnet2,
+                "Unet3 Image":lyrUnet3,
+                "Unet4 Image":lyrUnet4
+            };
+            
+            ctlLayers = L.control.layers(objBasemaps, objOverlays).addTo(mymap);
             
             
             
