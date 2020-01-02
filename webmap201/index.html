@@ -65,6 +65,7 @@
             <button id="btnLocate" class="btn btn-primary btn-block">Locate</button>
             <button id="btnZocalo" class="btn btn-primary btn-block">Zoom To Zocalo</button>
             <button id="btnGor45" class="btn btn-primary btn-block">Zoom To Gor Perjuangan 45</button>
+            <button id="btnToGor45" class="btn btn-primary btn-block">Zoom To Gor Perjuangan 45 Road</button>
             <h4> Zoom Level: <span id='zoom-level'></span></h4>
             <h4> Map Center: <span id='map-center'></span></h4>
             <h4> Mouse Location: <span id='mouse-location'></span></h4>
@@ -91,6 +92,7 @@
         var lyrUnet4;
         var mrkCurrentLocation;
         var mrkGorPerjuangan;
+        var plnToPolije;
         var popZocalo;
         var popExample;
 //        var ctlZoom;
@@ -197,6 +199,9 @@
             mrkGorPerjuangan = L.marker([-8.159631, 113.720768], {draggable:true}).addTo(mymap);
             mrkGorPerjuangan.bindTooltip("Gor Perjuangan 45");
             
+            plnToPolije = L.polyline([[[-8.160553, 113.721017],[-8.161276, 113.723027],[-8.161722, 113.723456],[-8.163079, 113.724079],[-8.163179, 113.724173],[-8.163264, 113.725031],[-8.163285, 113.725471],[-8.163773, 113.727102],[-8.163285, 113.727242],[-8.163126, 113.726855]],[[-8.160553, 113.721017],[-8.161276, 113.723027],[-8.161722, 113.723456],[-8.163079, 113.724079],[-8.163179, 113.724173],[-8.163264, 113.725031],[-8.163285, 113.725471],[-8.162909, 113.725562],[-8.162979, 113.725943],[-8.163001, 113.726254],[-8.163126, 113.726855]]], {color:'red'}).addTo(mymap);
+            //two line is an array of array
+            
 //            popExample = L.popup();
 //            popExample.setLatLng([-8.16150, 113.72644]);
 //            popExample.setContent($("#side-bar")[0]);
@@ -294,6 +299,11 @@
                 mymap.setView([-8.159631, 113.720768]);
                 mrkGorPerjuangan.setLatLng([-8.159631, 113.720768]);
                 mrkGorPerjuangan.setTooltipContent("Gor 45");
+            });
+            
+            $("#btnToGor45").click(function(){
+                mymap.fitBounds(plnToPolije.getBounds());
+                //zoom to the latlng bounds
             });
             
             $("#sldOpacity").on('change', function(){
