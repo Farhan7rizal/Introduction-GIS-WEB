@@ -66,6 +66,8 @@
             <button id="btnZocalo" class="btn btn-primary btn-block">Zoom To Zocalo</button>
             <button id="btnGor45" class="btn btn-primary btn-block">Zoom To Gor Perjuangan 45</button>
             <button id="btnToGor45" class="btn btn-primary btn-block">Zoom To Gor Perjuangan 45 Road</button>
+            <button id="btnAddGor45" class="btn btn-primary btn-block">Add Gor Perjuangan 45 To Vector Group</button>
+            <button id="btnColor" class="btn btn-primary btn-block">Change Color</button>
             <h4> Zoom Level: <span id='zoom-level'></span></h4>
             <h4> Map Center: <span id='map-center'></span></h4>
             <h4> Mouse Location: <span id='mouse-location'></span></h4>
@@ -94,6 +96,8 @@
         var mrkGorPerjuangan;
         var plnToPolije;
         var plyJTI;
+        var fgpPolije;
+        //fgp is feature group
         var popZocalo;
         var popExample;
 //        var ctlZoom;
@@ -133,16 +137,19 @@
             lyrUnet3 = L.imageOverlay('img/Unet3jadi.PNG', [[-8.170241, 113.714942],[-8.163713, 113.710393]]).addTo(mymap);
             lyrUnet4 = L.imageOverlay('img/Unet4jadi.PNG', [[-8.163713, 113.714348],[-8.161144, 113.712687]]).addTo(mymap);
             
-            mrkGorPerjuangan = L.marker([-8.159631, 113.720768], {draggable:true}).addTo(mymap);
+            mrkGorPerjuangan = L.marker([-8.159631, 113.720768], {draggable:true});
             mrkGorPerjuangan.bindTooltip("Gor Perjuangan 45");
             
             
             
-            plyJTI = L.polygon([[[-8.157877, 113.722245],[-8.158222, 113.723248],[-8.157448, 113.723495],[-8.157215, 113.722503]],[[-8.157417, 113.722708],[-8.157463, 113.722894],[-8.157614, 113.723264],[-8.157715, 113.723226],[-8.157563, 113.722853],[-8.157569, 113.722829],[-8.157513, 113.722668]],[[-8.156688, 113.722927],[-8.156857, 113.723469],[-8.157239, 113.723346],[-8.157059, 113.722793]]],{color:'red',fillColor:'yellow',fillOpacity:0.8}).addTo(mymap);
+            plyJTI = L.polygon([[[-8.157877, 113.722245],[-8.158222, 113.723248],[-8.157448, 113.723495],[-8.157215, 113.722503]],[[-8.157417, 113.722708],[-8.157463, 113.722894],[-8.157614, 113.723264],[-8.157715, 113.723226],[-8.157563, 113.722853],[-8.157569, 113.722829],[-8.157513, 113.722668]],[[-8.156688, 113.722927],[-8.156857, 113.723469],[-8.157239, 113.723346],[-8.157059, 113.722793]]],{color:'red',fillColor:'yellow',fillOpacity:0.8});
 
-            plnToPolije = L.polyline([[[-8.160553, 113.721017],[-8.161276, 113.723027],[-8.161722, 113.723456],[-8.163079, 113.724079],[-8.163179, 113.724173],[-8.163264, 113.725031],[-8.163285, 113.725471],[-8.163773, 113.727102],[-8.163285, 113.727242],[-8.163126, 113.726855]],[[-8.160553, 113.721017],[-8.161276, 113.723027],[-8.161722, 113.723456],[-8.163079, 113.724079],[-8.163179, 113.724173],[-8.163264, 113.725031],[-8.163285, 113.725471],[-8.162909, 113.725562],[-8.162979, 113.725943],[-8.163001, 113.726254],[-8.163126, 113.726855]],[[-8.157672, 113.722285],[-8.157815, 113.722864]]], {color:'purple'}).addTo(mymap);
+            plnToPolije = L.polyline([[[-8.160553, 113.721017],[-8.161276, 113.723027],[-8.161722, 113.723456],[-8.163079, 113.724079],[-8.163179, 113.724173],[-8.163264, 113.725031],[-8.163285, 113.725471],[-8.163773, 113.727102],[-8.163285, 113.727242],[-8.163126, 113.726855]],[[-8.160553, 113.721017],[-8.161276, 113.723027],[-8.161722, 113.723456],[-8.163079, 113.724079],[-8.163179, 113.724173],[-8.163264, 113.725031],[-8.163285, 113.725471],[-8.162909, 113.725562],[-8.162979, 113.725943],[-8.163001, 113.726254],[-8.163126, 113.726855]],[[-8.157672, 113.722285],[-8.157815, 113.722864]]], {color:'purple'});
             //two line is an array of array
-         
+            
+            //delete all layer that addTo(mymap)
+            fgpPolije = L.featureGroup([plnToPolije, plyJTI]).addTo(mymap); 
+            
             objBasemaps = {
                 "Open Street Maps": lyrOSM,
                 "Topo Map": lyrTopo,
@@ -158,9 +165,10 @@
                 "Unet2 Image":lyrUnet2,
                 "Unet3 Image":lyrUnet3,
                 "Unet4 Image":lyrUnet4,
-                "Gor Perjuangan 45":mrkGorPerjuangan,
-                "JTI":plyJTI,
-                "Jalan bangke":plnToPolije
+//                "Gor Perjuangan 45":mrkGorPerjuangan,
+//                "JTI":plyJTI,
+//                "Jalan bangke":plnToPolije
+                "PoltekJember Vector":fgpPolije
             };
             
             ctlLayers = L.control.layers(objBasemaps, objOverlays).addTo(mymap);
@@ -321,6 +329,24 @@
                 $("#image-opacity").html(this.value);
                 //we just returning the value of the slide, and displaying it with a span tag
                 lyrPoltekJember.setOpacity(this.value);
+            });
+            
+            $("#btnColor").on('click', function(){
+                fgpPolije.setStyle({color:'purple', fillColor:'green',fillOpacity:0.8});
+            });
+            
+            
+            //add layer to fgp
+            $("#btnAddGor45").click(function(){
+//                fgpPolije.addLayer(mrkGorPerjuangan);
+                //make it toggle
+                if (fgpPolije.hasLayer(mrkGorPerjuangan)) {
+                    fgpPolije.removeLayer(mrkGorPerjuangan);
+                    $("#btnAddGor45").html("Add Gor 45 To Polije Vectors");
+                } else {
+                    fgpPolije.addLayer(mrkGorPerjuangan);
+                    $("#btnAddGor45").html("Remove Gor 45 From Polije Vectors");
+                }
             });
 
             //
