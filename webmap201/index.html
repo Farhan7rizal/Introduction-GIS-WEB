@@ -93,6 +93,7 @@
         var mrkCurrentLocation;
         var mrkGorPerjuangan;
         var plnToPolije;
+        var plyJTI;
         var popZocalo;
         var popExample;
 //        var ctlZoom;
@@ -131,6 +132,16 @@
             lyrUnet2 = L.imageOverlay('img/Unet2jadi.PNG', [[-8.163717, 113.724237],[-8.170241, 113.714942]]).addTo(mymap);
             lyrUnet3 = L.imageOverlay('img/Unet3jadi.PNG', [[-8.170241, 113.714942],[-8.163713, 113.710393]]).addTo(mymap);
             lyrUnet4 = L.imageOverlay('img/Unet4jadi.PNG', [[-8.163713, 113.714348],[-8.161144, 113.712687]]).addTo(mymap);
+            
+            mrkGorPerjuangan = L.marker([-8.159631, 113.720768], {draggable:true}).addTo(mymap);
+            mrkGorPerjuangan.bindTooltip("Gor Perjuangan 45");
+            
+            
+            
+            plyJTI = L.polygon([[[-8.157877, 113.722245],[-8.158222, 113.723248],[-8.157448, 113.723495],[-8.157215, 113.722503]],[[-8.157417, 113.722708],[-8.157463, 113.722894],[-8.157614, 113.723264],[-8.157715, 113.723226],[-8.157563, 113.722853],[-8.157569, 113.722829],[-8.157513, 113.722668]],[[-8.156688, 113.722927],[-8.156857, 113.723469],[-8.157239, 113.723346],[-8.157059, 113.722793]]],{color:'red',fillColor:'yellow',fillOpacity:0.8}).addTo(mymap);
+
+            plnToPolije = L.polyline([[[-8.160553, 113.721017],[-8.161276, 113.723027],[-8.161722, 113.723456],[-8.163079, 113.724079],[-8.163179, 113.724173],[-8.163264, 113.725031],[-8.163285, 113.725471],[-8.163773, 113.727102],[-8.163285, 113.727242],[-8.163126, 113.726855]],[[-8.160553, 113.721017],[-8.161276, 113.723027],[-8.161722, 113.723456],[-8.163079, 113.724079],[-8.163179, 113.724173],[-8.163264, 113.725031],[-8.163285, 113.725471],[-8.162909, 113.725562],[-8.162979, 113.725943],[-8.163001, 113.726254],[-8.163126, 113.726855]],[[-8.157672, 113.722285],[-8.157815, 113.722864]]], {color:'purple'}).addTo(mymap);
+            //two line is an array of array
          
             objBasemaps = {
                 "Open Street Maps": lyrOSM,
@@ -140,13 +151,16 @@
                 "Watercolor": lyrWatercolor,
                 "Google Maps": lyrGoogle
             };
-            
+            //the var must be above object overlays
             objOverlays = {
                 "PoltekJember Image":lyrPoltekJember,
                 "Unet1 Image":lyrUnet1,
                 "Unet2 Image":lyrUnet2,
                 "Unet3 Image":lyrUnet3,
-                "Unet4 Image":lyrUnet4
+                "Unet4 Image":lyrUnet4,
+                "Gor Perjuangan 45":mrkGorPerjuangan,
+                "JTI":plyJTI,
+                "Jalan bangke":plnToPolije
             };
             
             ctlLayers = L.control.layers(objBasemaps, objOverlays).addTo(mymap);
@@ -196,11 +210,7 @@
             popZocalo.setLatLng([-8.16150, 113.72644]);
             popZocalo.setContent("<h2>Zocalo</h2><img src='img/zocalo.jpg'  width='150px'>"); //set content
             
-            mrkGorPerjuangan = L.marker([-8.159631, 113.720768], {draggable:true}).addTo(mymap);
-            mrkGorPerjuangan.bindTooltip("Gor Perjuangan 45");
             
-            plnToPolije = L.polyline([[[-8.160553, 113.721017],[-8.161276, 113.723027],[-8.161722, 113.723456],[-8.163079, 113.724079],[-8.163179, 113.724173],[-8.163264, 113.725031],[-8.163285, 113.725471],[-8.163773, 113.727102],[-8.163285, 113.727242],[-8.163126, 113.726855]],[[-8.160553, 113.721017],[-8.161276, 113.723027],[-8.161722, 113.723456],[-8.163079, 113.724079],[-8.163179, 113.724173],[-8.163264, 113.725031],[-8.163285, 113.725471],[-8.162909, 113.725562],[-8.162979, 113.725943],[-8.163001, 113.726254],[-8.163126, 113.726855]]], {color:'red'}).addTo(mymap);
-            //two line is an array of array
             
 //            popExample = L.popup();
 //            popExample.setLatLng([-8.16150, 113.72644]);
