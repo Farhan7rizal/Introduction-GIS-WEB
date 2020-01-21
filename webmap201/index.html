@@ -32,7 +32,7 @@
     
     <script src="src/plugins/leaflet-styleeditorMMiller/javascript/Leaflet.StyleEditor.js"></script>
     <script src="src/plugins/leaflet-styleeditorMMiller/javascript/Leaflet.StyleForms.js"></script>
-
+    <script src="src/plugins/leaflet.ajax.min.js"></script>
     <style>
         #mapdiv {
             height: 735px;
@@ -142,6 +142,8 @@
         var lyrUnet2;
         var lyrUnet3;
         var lyrUnet4;
+        var lyrEagleNests;
+        var lyrEaglePoly;
         var mrkCurrentLocation;
         var mrkGorPerjuangan;
         var plnToPolije;
@@ -206,7 +208,14 @@
             fgpDrawnItems.addTo(mymap);
             //Drawn Items is feature of leaflet.draw
             
+            lyrEagleNests = L.geoJSON.ajax('data/nest/wildlife_eagle.geojson',{pointToLayer:returnEagleMarker, filter:filterEagleNests}).addTo(mymap);
+            lyrEagleNests.on('data:loaded',function(){
+               mymap.fitBounds(lyrEagleNests.getBounds());//get location (rectangle) for first time loaded
+            });
+            lyrEaglePoly = L.geoJSON.ajax('data/nest/client_poly.geojson').addTo(mymap);
+            
             objBasemaps = {
+                
                 "Open Street Maps": lyrOSM,
                 "Topo Map": lyrTopo,
                 "Imagery": lyrImagery,
@@ -216,6 +225,8 @@
             };
             //the var must be above object overlays
             objOverlays = {
+                "Eagle Nest": lyrEagleNests,
+                "Eagle Poly": lyrEaglePoly,
                 "PoltekJember Image":lyrPoltekJember,
                 "Unet1 Image":lyrUnet1,
                 "Unet2 Image":lyrUnet2,
@@ -437,7 +448,50 @@
             //to return latitude and longitude in single array
             return "[" + ll.lat.toFixed(5) + ", " + ll.lng.toFixed(5) + "]";
         }
+        //we must write in outside Doc ready function, wait until a whole page loaded before it executed any of JS code. and because we can't declare a function inside another function 
+        function returnEagleMarker(json, latlng){
+            //this function is going to get run on every single json object , json object itself have access to this variable (json) and then coordinate will have access to this variable
+            var att = json.properties;
+            if (att.status=='ACTIVE NEST') {
+                var clrNest = 'deeppink';
+            } else {
+                var clrNest = 'lightblue';
+            }
+            return L.circleMarker(latlng, {radius:10, color:clrNest}).bindTooltip("<h4>Eagle Nest: "+att.nest_id+"</h4>Status: "+att.status); 
+            
+            
+            
+        }
+        
+        function filterEagleNests(json){
+//            filter is make true dsiplayed adn false not displayed.
+            var att = json.properties;
+            if(att.status=='ACTIVE NEST'){
+                return true;
+            } else {
+                return false;
+            }
+        }
+        
     </script>
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
