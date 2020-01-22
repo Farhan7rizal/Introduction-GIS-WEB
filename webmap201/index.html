@@ -212,7 +212,7 @@
             lyrEagleNests.on('data:loaded',function(){
                mymap.fitBounds(lyrEagleNests.getBounds());//get location (rectangle) for first time loaded
             });
-            lyrEaglePoly = L.geoJSON.ajax('data/nest/client_poly.geojson').addTo(mymap);
+            lyrEaglePoly = L.geoJSON.ajax('data/nest/client_poly.geojson',{onEachFeature:returnEaglePoly}).addTo(mymap);
             
             objBasemaps = {
                 
@@ -462,6 +462,12 @@
             
             
         }
+        
+        function returnEaglePoly(feature, featureLayer) {
+                featureLayer.bindTooltip(feature.properties.type);
+            }
+        
+
         
         function filterEagleNests(json){
 //            filter is make true dsiplayed adn false not displayed.
