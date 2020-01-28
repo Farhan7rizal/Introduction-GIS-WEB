@@ -17,6 +17,10 @@
     
     <link rel="stylesheet" href="src/bootstrap4-glyphicons/css/bootstrap-glyphicons.min.css">
     <link rel="stylesheet" href="src/plugins/leaflet-styleeditorMMiller/css/Leaflet.StyleEditor.css">
+    
+    <link rel="stylesheet" href="src/css/fontawesome.min.css">
+    <link rel="stylesheet" href="src/plugins/leaflet.awesome-markers.css">
+    
 <!--    be carefull with linux because linux is case sensitive-->
     
     <script src="src/leaflet-src.js"></script>
@@ -33,6 +37,8 @@
     <script src="src/plugins/leaflet-styleeditorMMiller/javascript/Leaflet.StyleEditor.js"></script>
     <script src="src/plugins/leaflet-styleeditorMMiller/javascript/Leaflet.StyleForms.js"></script>
     <script src="src/plugins/leaflet.ajax.min.js"></script>
+    <script src="src/plugins/leaflet.sprite.js"></script>
+    <script src="src/plugins/leaflet.awesome-markers.min.js"></script>
     <style>
         #mapdiv {
             height: 735px;
@@ -144,6 +150,7 @@
         var lyrUnet4;
         var lyrEagleNests;
         var lyrEaglePoly;
+        var lyrRaptorNests;
         var mrkCurrentLocation;
         var mrkGorPerjuangan;
         var plnToPolije;
@@ -168,8 +175,18 @@
         var ctlStyle;
         var objBasemaps;
         var objOverlays;
+        var icnRedSprite;
+        var icnVioletSprite;
+        var icnLAMtree;
+        var icnLAMbird;
         
         $(document).ready(function() {
+//            define in very begining 
+            icnRedSprite = L.spriteIcon('red');
+            icnVioletSprite = L.spriteIcon('violet');
+            icnLAMtree = L.AwesomeMarkers.icon({icon: 'star',  prefix: 'glyphicon',markerColor: 'green'});
+            icnLAMbird = L.AwesomeMarkers.icon({icon:'camera', color:'green', prefix:'fas'});
+            
             mymap = L.map('mapdiv', {
                 center: [-8.16150, 113.72644],
                 zoom: 13, zoomControl:false,attributionControl:false
@@ -208,11 +225,18 @@
             fgpDrawnItems.addTo(mymap);
             //Drawn Items is feature of leaflet.draw
             
-            lyrEagleNests = L.geoJSON.ajax('data/nest/wildlife_eagle.geojson',{pointToLayer:returnEagleMarker, filter:filterEagleNests}).addTo(mymap);
+            lyrEagleNests = L.geoJSON.ajax('data/nest/wildlife_eagle.geojson',{pointToLayer:returnEagleMarker}).addTo(mymap);
+//            , filter:filterEagleNests
             lyrEagleNests.on('data:loaded',function(){
                mymap.fitBounds(lyrEagleNests.getBounds());//get location (rectangle) for first time loaded
+                lyrEagleNests.addTo(mymap);
             });
-            lyrEaglePoly = L.geoJSON.ajax('data/nest/client_poly.geojson',{onEachFeature:returnEaglePoly}).addTo(mymap);
+//            lyrEaglePoly = L.geoJSON.ajax('data/nest/client_poly.geojson',{onEachFeature:returnEaglePoly}).addTo(mymap);
+            
+            lyrRaptorNests = L.geoJSON.ajax('data/nest/wildlife_raptor.geojson',{pointToLayer:returnRaptorMarker});
+            lyrRaptorNests.on('data:loaded',function(){
+               lyrRaptorNests.addTo(mymap);
+            }); 
             
             objBasemaps = {
                 
@@ -226,7 +250,8 @@
             //the var must be above object overlays
             objOverlays = {
                 "Eagle Nest": lyrEagleNests,
-                "Eagle Poly": lyrEaglePoly,
+                "Raptor Nest": lyrRaptorNests,
+//                "Eagle Poly": lyrEaglePoly,
                 "PoltekJember Image":lyrPoltekJember,
                 "Unet1 Image":lyrUnet1,
                 "Unet2 Image":lyrUnet2,
@@ -450,15 +475,30 @@
         }
         //we must write in outside Doc ready function, wait until a whole page loaded before it executed any of JS code. and because we can't declare a function inside another function 
         function returnEagleMarker(json, latlng){
-            //this function is going to get run on every single json object , json object itself have access to this variable (json) and then coordinate will have access to this variable
+//            //this function is going to get run on every single json object , json object itself have access to this variable (json) and then coordinate will have access to this variable
             var att = json.properties;
-            if (att.status=='ACTIVE NEST') {
-                var clrNest = 'deeppink';
-            } else {
-                var clrNest = 'lightblue';
-            }
-            return L.circleMarker(latlng, {radius:10, color:clrNest}).bindTooltip("<h4>Eagle Nest: "+att.nest_id+"</h4>Status: "+att.status); 
+//            if (att.status=='ACTIVE NEST') {
+////                var wgtNest = 5;
+////                var opcNest = 1;
+//                var clrNest = 'deeppink';
+////                var dshNest = ''; //default
+//            } else {
+////                var wgtNest = 5;
+////                var opcNest = 1;
+//                var clrNest = 'green';
+////                var dshNest = '2,8';
+//            }
+//            return L.circleMarker(latlng, {radius:10, color:clrNest, fillColor:'green', fillOpacity:0.5}).bindTooltip("<h4>Eagle Nest: "+att.nest_id+"</h4>Status: "+att.status); 
+////            return L.circleMarker(latlng, {radius:10, color:'green',weight:wgtNest,opacity:opcNest,fillColor:clrNest, fillOpacity:0.7, dashArray:dshNest}).bindTooltip("<h4>Eagle Nest: "+att.nest_id+"</h4>Status: "+att.status); 
             
+            if (att.status=='ACTIVE NEST') {
+//                var icnEagle = icnRedSprite;
+                var icnEagle = icnLAMbird;
+            } else {
+//                var icnEagle = icnVioletSprite;
+                var icnEagle = icnLAMtree;
+            }
+             return L.marker(latlng, {icon:icnEagle});
             
             
         }
@@ -469,14 +509,41 @@
         
 
         
-        function filterEagleNests(json){
-//            filter is make true dsiplayed adn false not displayed.
+//        function filterEagleNests(json){
+////            filter is make true dsiplayed adn false not displayed.
+//            var att = json.properties;
+//            if(att.status=='ACTIVE NEST'){
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        }
+        
+        function returnRaptorMarker(json, latlng){
             var att = json.properties;
-            if(att.status=='ACTIVE NEST'){
-                return true;
-            } else {
-                return false;
+            switch (att.recentspecies) {
+                case 'Red-tail Hawk':
+                    var radRaptor = 533;
+                    break;
+                case 'Swainsons Hawk':
+                    var radRaptor = 400;
+                    break;
+                default:
+                    var radRaptor = 804;
+                    break;
             }
+            switch (att.recentstatus) {
+                case 'ACTIVE NEST':
+                    var optRaptor = {radius:radRaptor, color:'deeppink', fillColor:'blue', fillOpacity:0.5};
+                    break;
+                case 'INACTIVE NEST':
+                    var optRaptor = {radius:radRaptor, color:'blue', fillColor:'blue', fillOpacity:0.5};
+                    break;
+                case 'FLEDGED NEST':
+                    var optRaptor = {radius:radRaptor, color:'blue', fillColor:'blue', fillOpacity:0.5, dashArray:'2,8'};
+                    break;    
+            }
+            return L.circle(latlng, optRaptor).bindPopup("<h4>Raptor Nest: "+att.Nest_ID+"</h4>Status: "+att.recentstatus+"<br>Species: "+att.recentspecies+"<br>Last Survey: "+att.lastsurvey);
         }
         
     </script>
