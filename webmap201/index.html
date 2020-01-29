@@ -22,6 +22,8 @@
     <link rel="stylesheet" href="src/plugins/leaflet.awesome-markers.css">
     <link rel="stylesheet" href="src/plugins/leaflet-mapkey/MapkeyIcons.css">
     <link rel="stylesheet" href="src/plugins/leaflet-mapkey/L.Icon.Mapkey.css">
+    <link rel="stylesheet" href="src/plugins/MarkerCluster.css">
+    <link rel="stylesheet" href="src/plugins/MarkerCluster.Default.css">
     
 <!--    be carefull with linux because linux is case sensitive-->
     
@@ -42,6 +44,7 @@
     <script src="src/plugins/leaflet.sprite.js"></script>
     <script src="src/plugins/leaflet.awesome-markers.min.js"></script>
     <script src="src/plugins/leaflet-mapkey/L.Icon.Mapkey.js"></script>
+    <script src="src/plugins/leaflet.markercluster.js"></script>
     
     <style>
         #mapdiv {
@@ -155,6 +158,7 @@
         var lyrEagleNests;
         var lyrEaglePoly;
         var lyrRaptorNests;
+        var lyrMarkerCluster;
         var mrkCurrentLocation;
         var mrkGorPerjuangan;
         var plnToPolije;
@@ -179,23 +183,28 @@
         var ctlStyle;
         var objBasemaps;
         var objOverlays;
-        var icnRedSprite;
-        var icnVioletSprite;
-        var icnLAMtree;
-        var icnLAMbird;
-        var icnMKtree;
-        var icnMKbird;
+//        var icnRedSprite;
+//        var icnVioletSprite;
+//        var icnLAMtree;
+//        var icnLAMbird;
+//        var icnMKtree;
+//        var icnMKbird;
+//        var icnEagleActive;
+//        var icnEagleInactive;
         
         $(document).ready(function() {
 //            define in very begining 
-            icnRedSprite = L.spriteIcon('red');
-            icnVioletSprite = L.spriteIcon('violet');
-            
-            icnLAMtree = L.AwesomeMarkers.icon({icon: 'star',  prefix: 'glyphicon',markerColor: 'green'});
-            icnLAMbird = L.AwesomeMarkers.icon({icon: 'certificate', prefix: 'glyphicon', markerColor: 'blue'});
-            
-            icnMKtree = L.icon.mapkey({icon:'cinema_alt', color:'#880000', background:'green', size:25, borderRadius:5});
-            icnMKbird = L.icon.mapkey({icon:'tree_cinofer', color:'#880000', background:'lightblue', size:35, borderRadius:5});
+//            icnRedSprite = L.spriteIcon('red');
+//            icnVioletSprite = L.spriteIcon('violet');
+//            
+//            icnLAMtree = L.AwesomeMarkers.icon({icon: 'star',  prefix: 'glyphicon',markerColor: 'green'});
+//            icnLAMbird = L.AwesomeMarkers.icon({icon: 'certificate', prefix: 'glyphicon', markerColor: 'blue'});
+//            
+//            icnMKtree = L.icon.mapkey({icon:'cinema_alt', color:'#880000', background:'green', size:25, borderRadius:5});
+//            icnMKbird = L.icon.mapkey({icon:'tree_cinofer', color:'#880000', background:'lightblue', size:35, borderRadius:5});
+//            
+//            icnEagleActive = L.icon({iconUrl:'img/nest.png', iconSize:[40,40], iconAnchor:[20,24]});
+//            icnEagleInactive = L.icon({iconUrl:'img/nest2.png', iconSize:[40,40], iconAnchor:[20,24]});
             
             
             mymap = L.map('mapdiv', {
@@ -244,9 +253,12 @@
             });
 //            lyrEaglePoly = L.geoJSON.ajax('data/nest/client_poly.geojson',{onEachFeature:returnEaglePoly}).addTo(mymap);
             
+            lyrMarkerCluster = L.markerClusterGroup();
+            
             lyrRaptorNests = L.geoJSON.ajax('data/nest/wildlife_raptor.geojson',{pointToLayer:returnRaptorMarker});
             lyrRaptorNests.on('data:loaded',function(){
-               lyrRaptorNests.addTo(mymap);
+                lyrMarkerCluster.addLayer(lyrRaptorNests);
+                lyrMarkerCluster.addTo(mymap); // Does not add to map (when comment), but add in obj overlays
             }); 
             
             objBasemaps = {
@@ -262,16 +274,17 @@
             objOverlays = {
                 "Eagle Nest": lyrEagleNests,
                 "Raptor Nest": lyrRaptorNests,
+                "Raptor Cluster": lyrMarkerCluster,
 //                "Eagle Poly": lyrEaglePoly,
-                "PoltekJember Image":lyrPoltekJember,
-                "Unet1 Image":lyrUnet1,
-                "Unet2 Image":lyrUnet2,
-                "Unet3 Image":lyrUnet3,
-                "Unet4 Image":lyrUnet4,
+//                "PoltekJember Image":lyrPoltekJember,
+//                "Unet1 Image":lyrUnet1,
+//                "Unet2 Image":lyrUnet2,
+//                "Unet3 Image":lyrUnet3,
+//                "Unet4 Image":lyrUnet4,
 //                "Gor Perjuangan 45":mrkGorPerjuangan,
 //                "JTI":plyJTI,
 //                "Jalan bangke":plnToPolije
-                "PoltekJember Vector":fgpPolije,
+//                "PoltekJember Vector":fgpPolije,
                 "Drawn Items":fgpDrawnItems
             };
             
@@ -488,30 +501,32 @@
         function returnEagleMarker(json, latlng){
 //            //this function is going to get run on every single json object , json object itself have access to this variable (json) and then coordinate will have access to this variable
             var att = json.properties;
-//            if (att.status=='ACTIVE NEST') {
-////                var wgtNest = 5;
-////                var opcNest = 1;
-//                var clrNest = 'deeppink';
-////                var dshNest = ''; //default
-//            } else {
-////                var wgtNest = 5;
-////                var opcNest = 1;
-//                var clrNest = 'green';
-////                var dshNest = '2,8';
-//            }
-//            return L.circleMarker(latlng, {radius:10, color:clrNest, fillColor:'green', fillOpacity:0.5}).bindTooltip("<h4>Eagle Nest: "+att.nest_id+"</h4>Status: "+att.status); 
-////            return L.circleMarker(latlng, {radius:10, color:'green',weight:wgtNest,opacity:opcNest,fillColor:clrNest, fillOpacity:0.7, dashArray:dshNest}).bindTooltip("<h4>Eagle Nest: "+att.nest_id+"</h4>Status: "+att.status); 
-            
             if (att.status=='ACTIVE NEST') {
-//                var icnEagle = icnRedSprite;
-//                var icnEagle = icnLAMbird;
-                var icnEagle = icnMKbird;
+//                var wgtNest = 5;
+//                var opcNest = 1;
+                var clrNest = 'deeppink';
+//                var dshNest = ''; //default
             } else {
-//                var icnEagle = icnVioletSprite;
-//                var icnEagle = icnLAMtree;
-                var icnEagle = icnMKtree;
+//                var wgtNest = 5;
+//                var opcNest = 1;
+                var clrNest = 'green';
+//                var dshNest = '2,8';
             }
-             return L.marker(latlng, {icon:icnEagle}).bindTooltip("<h4>Eagle Nest: "+att.nest_id+"</h4>Status: "+att.status);
+            return L.circleMarker(latlng, {radius:10, color:clrNest, fillColor:'green', fillOpacity:0.5}).bindTooltip("<h4>Eagle Nest: "+att.nest_id+"</h4>Status: "+att.status); 
+//            return L.circleMarker(latlng, {radius:10, color:'green',weight:wgtNest,opacity:opcNest,fillColor:clrNest, fillOpacity:0.7, dashArray:dshNest}).bindTooltip("<h4>Eagle Nest: "+att.nest_id+"</h4>Status: "+att.status); 
+            
+//            if (att.status=='ACTIVE NEST') {
+////                var icnEagle = icnRedSprite;
+////                var icnEagle = icnLAMbird;
+////                var icnEagle = icnMKbird;
+//                var icnEagle = icnEagleActive;
+//            } else {
+////                var icnEagle = icnVioletSprite;
+////                var icnEagle = icnLAMtree;
+////                var icnEagle = icnMKtree;
+//                var icnEagle = icnEagleInactive;
+//            }
+//             return L.marker(latlng, {icon:icnEagle}).bindTooltip("<h4>Eagle Nest: "+att.nest_id+"</h4>Status: "+att.status);
             
             
         }
