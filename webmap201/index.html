@@ -20,6 +20,8 @@
     
     <link rel="stylesheet" href="src/css/fontawesome.min.css">
     <link rel="stylesheet" href="src/plugins/leaflet.awesome-markers.css">
+    <link rel="stylesheet" href="src/plugins/leaflet-mapkey/MapkeyIcons.css">
+    <link rel="stylesheet" href="src/plugins/leaflet-mapkey/L.Icon.Mapkey.css">
     
 <!--    be carefull with linux because linux is case sensitive-->
     
@@ -39,6 +41,8 @@
     <script src="src/plugins/leaflet.ajax.min.js"></script>
     <script src="src/plugins/leaflet.sprite.js"></script>
     <script src="src/plugins/leaflet.awesome-markers.min.js"></script>
+    <script src="src/plugins/leaflet-mapkey/L.Icon.Mapkey.js"></script>
+    
     <style>
         #mapdiv {
             height: 735px;
@@ -179,13 +183,20 @@
         var icnVioletSprite;
         var icnLAMtree;
         var icnLAMbird;
+        var icnMKtree;
+        var icnMKbird;
         
         $(document).ready(function() {
 //            define in very begining 
             icnRedSprite = L.spriteIcon('red');
             icnVioletSprite = L.spriteIcon('violet');
+            
             icnLAMtree = L.AwesomeMarkers.icon({icon: 'star',  prefix: 'glyphicon',markerColor: 'green'});
-            icnLAMbird = L.AwesomeMarkers.icon({icon:'camera', color:'green', prefix:'fas'});
+            icnLAMbird = L.AwesomeMarkers.icon({icon: 'certificate', prefix: 'glyphicon', markerColor: 'blue'});
+            
+            icnMKtree = L.icon.mapkey({icon:'cinema_alt', color:'#880000', background:'green', size:25, borderRadius:5});
+            icnMKbird = L.icon.mapkey({icon:'tree_cinofer', color:'#880000', background:'lightblue', size:35, borderRadius:5});
+            
             
             mymap = L.map('mapdiv', {
                 center: [-8.16150, 113.72644],
@@ -493,12 +504,14 @@
             
             if (att.status=='ACTIVE NEST') {
 //                var icnEagle = icnRedSprite;
-                var icnEagle = icnLAMbird;
+//                var icnEagle = icnLAMbird;
+                var icnEagle = icnMKbird;
             } else {
 //                var icnEagle = icnVioletSprite;
-                var icnEagle = icnLAMtree;
+//                var icnEagle = icnLAMtree;
+                var icnEagle = icnMKtree;
             }
-             return L.marker(latlng, {icon:icnEagle});
+             return L.marker(latlng, {icon:icnEagle}).bindTooltip("<h4>Eagle Nest: "+att.nest_id+"</h4>Status: "+att.status);
             
             
         }
