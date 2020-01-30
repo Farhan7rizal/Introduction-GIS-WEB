@@ -158,6 +158,9 @@
         var lyrEagleNests;
         var lyrEaglePoly;
         var lyrRaptorNests;
+        var lyrClientLines;
+        var lyrBUOWL;
+        var lyrGBH;
         var lyrMarkerCluster;
         var mrkCurrentLocation;
         var mrkGorPerjuangan;
@@ -261,6 +264,14 @@
                 lyrMarkerCluster.addTo(mymap); // Does not add to map (when comment), but add in obj overlays
             }); 
             
+            lyrClientLines = L.geoJSON.ajax('data/nest/client_lines.geojson',{style:styleClientLinears, onEachFeature:processClientLinears}).addTo(mymap);
+            
+            lyrBUOWL = L.geoJSON.ajax('data/nest/wildlife_buowl.geojson',{style:styleBUOWL, onEachFeature:processBUOWL,filter:filterBUOWL}).addTo(mymap);
+            
+            lyrGBH = L.geoJSON.ajax('data/nest/wildlife_gbh.geojson',{style:{color:'fuchsia'}}).bindTooltip("GBH Nesting Area").addTo(mymap);
+            //add function (style) straight/on options
+            
+            
             objBasemaps = {
                 
                 "Open Street Maps": lyrOSM,
@@ -272,8 +283,11 @@
             };
             //the var must be above object overlays
             objOverlays = {
+                "Client Linears": lyrClientLines,
+                "Burrowing Owl Habitat": lyrBUOWL,
                 "Eagle Nest": lyrEagleNests,
                 "Raptor Nest": lyrRaptorNests,
+                "GBH Rookeries":lyrGBH,
                 "Raptor Cluster": lyrMarkerCluster,
 //                "Eagle Poly": lyrEaglePoly,
 //                "PoltekJember Image":lyrPoltekJember,
@@ -548,6 +562,10 @@
 //        }
         
         function returnRaptorMarker(json, latlng){
+            //            A Function defining how GeoJSON points spawn Leaflet layers. It is internally called when data is added, passing the GeoJSON point feature and its LatLng. The default is to spawn a default Marker:
+            //function(geoJsonPoint, latlng) {
+            //    return L.marker(latlng);
+            //}
             var att = json.properties;
             switch (att.recentspecies) {
                 case 'Red-tail Hawk':
@@ -573,7 +591,76 @@
             }
             return L.circle(latlng, optRaptor).bindPopup("<h4>Raptor Nest: "+att.Nest_ID+"</h4>Status: "+att.recentstatus+"<br>Species: "+att.recentspecies+"<br>Last Survey: "+att.lastsurvey);
         }
+
+        function styleClientLinears(json){
+            //            A Function defining the Path options for styling GeoJSON lines and polygons, called internally when data is added. The default value is to not override any defaults:
+            //function (geoJsonFeature) {
+            //    return {}
+            //}
+            var att = json.properties;
+            switch (att.type) {
+                    case 'Pipeline':
+                        return {color:'peru'};
+                        break;
+                    case 'Flowline':
+                        return {color:'navy'};
+                        break;
+                    case 'Flowline, est.':
+                        return {color:'navy', dashArray:"5,5"};
+                        break;
+                    case 'Electric Line':
+                        return {color:'darkgreen'};
+                        break;
+                    case 'Access Road - Confirmed':
+                        return {color:'darkred'};
+                        break;
+                    case 'Access Road - Estimated':
+                        return {color:'darkred', dashArray:"5,5"};
+                        break;
+                    case 'Extraction':
+                        return {color:'indigo'};
+                        break;
+                    default:
+                        return {color:'darkgoldenrod'};
+                        break;
+            }
+        }
+
+        function processClientLinears(json, lyr) {
+            //        A Function that will be called once for each created Feature, after it has been created and styled. Useful for attaching events and popups to features. The default is to do nothing with the newly created layers:
+            //function (feature, layer) {}
+            var att = json.properties;
+            lyr.bindTooltip("<h4>Linear Project: "+att.Project+"</h4>"+att.type+"<br>ROW Width: "+att.row_width);
+        }
         
+//        style:styleBUOWL, onEachFeature:processBUOWL
+        function styleBUOWL(json){
+            var att = json.properties;
+            switch (att.hist_occup){
+                case 'Yes':
+                    return {color:'deeppink', fillColor:'yellow'};
+                    break;
+                case 'Undetermined':
+                    return {color:'yellow'};
+                    break; 
+            }
+        }
+        
+        function processBUOWL(json, lyr){
+                var att = json.properties;
+                lyr.bindTooltip("<h4>Habitat ID: "+att.habitat_id+"</h4>Historically Occupied: "+att.hist_occup+"<br>Status: "+att.recentstatus);
+                
+            }
+        
+        function filterBUOWL(json){
+                var att = json.properties;
+                if (att.recentstatus=='REMOVED') {
+                    //mean doesn't include
+                    return false;
+                } else {
+                    return true;
+                }
+            }
     </script>
 </body>
 
