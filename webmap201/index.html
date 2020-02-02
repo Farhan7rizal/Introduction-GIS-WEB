@@ -209,104 +209,14 @@
 //            icnEagleActive = L.icon({iconUrl:'img/nest.png', iconSize:[40,40], iconAnchor:[20,24]});
 //            icnEagleInactive = L.icon({iconUrl:'img/nest2.png', iconSize:[40,40], iconAnchor:[20,24]});
             
+            // **************** Map Initialization *****************************
             
             mymap = L.map('mapdiv', {
-                center: [-8.16150, 113.72644],
-                zoom: 13, zoomControl:false,attributionControl:false
+//                center: [-8.16150, 113.72644],
+                center: [40.255409, -104.658508],
+                zoom: 11, zoomControl:true,attributionControl:false
             });
-//            lyrOSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
-            lyrOSM = L.tileLayer.provider('OpenStreetMap.Mapnik');            
-            lyrTopo = L.tileLayer.provider('OpenTopoMap');
-            lyrImagery = L.tileLayer.provider('Esri.WorldImagery');
-            lyrOutdoors = L.tileLayer.provider('Thunderforest.Outdoors');
-            lyrWatercolor = L.tileLayer.provider('Stamen.Watercolor');
             
-            lyrGoogle = L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}');
-            mymap.addLayer(lyrOSM);
-            
-            
-            lyrPoltekJember = L.imageOverlay('img/PoletekRasterLayer3jadi.PNG', [[-8.154097, 113.719472],[-8.161585, 113.726757]], {opacity:0.5}).addTo(mymap);
-            
-            lyrUnet1 = L.imageOverlay('img/Unet1jadi.PNG', [[-8.158042, 113.714356],[-8.163717, 113.724237]]).addTo(mymap);
-            lyrUnet2 = L.imageOverlay('img/Unet2jadi.PNG', [[-8.163717, 113.724237],[-8.170241, 113.714942]]).addTo(mymap);
-            lyrUnet3 = L.imageOverlay('img/Unet3jadi.PNG', [[-8.170241, 113.714942],[-8.163713, 113.710393]]).addTo(mymap);
-            lyrUnet4 = L.imageOverlay('img/Unet4jadi.PNG', [[-8.163713, 113.714348],[-8.161144, 113.712687]]).addTo(mymap);
-            
-            mrkGorPerjuangan = L.marker([-8.159631, 113.720768], {draggable:true});
-            mrkGorPerjuangan.bindTooltip("Gor Perjuangan 45");
-            
-            
-            
-            plyJTI = L.polygon([[[-8.157877, 113.722245],[-8.158222, 113.723248],[-8.157448, 113.723495],[-8.157215, 113.722503]],[[-8.157417, 113.722708],[-8.157463, 113.722894],[-8.157614, 113.723264],[-8.157715, 113.723226],[-8.157563, 113.722853],[-8.157569, 113.722829],[-8.157513, 113.722668]],[[-8.156688, 113.722927],[-8.156857, 113.723469],[-8.157239, 113.723346],[-8.157059, 113.722793]]],{color:'red',fillColor:'yellow',fillOpacity:0.8});
-
-            plnToPolije = L.polyline([[[-8.160553, 113.721017],[-8.161276, 113.723027],[-8.161722, 113.723456],[-8.163079, 113.724079],[-8.163179, 113.724173],[-8.163264, 113.725031],[-8.163285, 113.725471],[-8.163773, 113.727102],[-8.163285, 113.727242],[-8.163126, 113.726855]],[[-8.160553, 113.721017],[-8.161276, 113.723027],[-8.161722, 113.723456],[-8.163079, 113.724079],[-8.163179, 113.724173],[-8.163264, 113.725031],[-8.163285, 113.725471],[-8.162909, 113.725562],[-8.162979, 113.725943],[-8.163001, 113.726254],[-8.163126, 113.726855]],[[-8.157672, 113.722285],[-8.157815, 113.722864]]], {color:'purple'});
-            //two line is an array of array
-            
-            //delete all layer that addTo(mymap)
-            fgpPolije = L.featureGroup([plnToPolije, plyJTI]).addTo(mymap); 
-            fgpDrawnItems = new L.featureGroup();
-            fgpDrawnItems.addTo(mymap);
-            //Drawn Items is feature of leaflet.draw
-            
-            lyrEagleNests = L.geoJSON.ajax('data/nest/wildlife_eagle.geojson',{pointToLayer:returnEagleMarker}).addTo(mymap);
-//            , filter:filterEagleNests
-            lyrEagleNests.on('data:loaded',function(){
-               mymap.fitBounds(lyrEagleNests.getBounds());//get location (rectangle) for first time loaded
-                lyrEagleNests.addTo(mymap);
-            });
-//            lyrEaglePoly = L.geoJSON.ajax('data/nest/client_poly.geojson',{onEachFeature:returnEaglePoly}).addTo(mymap);
-            
-            lyrMarkerCluster = L.markerClusterGroup();
-            
-            lyrRaptorNests = L.geoJSON.ajax('data/nest/wildlife_raptor.geojson',{pointToLayer:returnRaptorMarker});
-            lyrRaptorNests.on('data:loaded',function(){
-                lyrMarkerCluster.addLayer(lyrRaptorNests);
-                lyrMarkerCluster.addTo(mymap); // Does not add to map (when comment), but add in obj overlays
-            }); 
-            
-            lyrClientLines = L.geoJSON.ajax('data/nest/client_lines.geojson',{style:styleClientLinears, onEachFeature:processClientLinears}).addTo(mymap);
-            
-            lyrBUOWL = L.geoJSON.ajax('data/nest/wildlife_buowl.geojson',{style:styleBUOWL, onEachFeature:processBUOWL,filter:filterBUOWL}).addTo(mymap);
-            
-            lyrGBH = L.geoJSON.ajax('data/nest/wildlife_gbh.geojson',{style:{color:'fuchsia'}}).bindTooltip("GBH Nesting Area").addTo(mymap);
-            //add function (style) straight/on options
-            
-            
-            objBasemaps = {
-                
-                "Open Street Maps": lyrOSM,
-                "Topo Map": lyrTopo,
-                "Imagery": lyrImagery,
-                "Outdoors":lyrOutdoors,
-                "Watercolor": lyrWatercolor,
-                "Google Maps": lyrGoogle
-            };
-            //the var must be above object overlays
-            objOverlays = {
-                "Client Linears": lyrClientLines,
-                "Burrowing Owl Habitat": lyrBUOWL,
-                "Eagle Nest": lyrEagleNests,
-                "Raptor Nest": lyrRaptorNests,
-                "GBH Rookeries":lyrGBH,
-                "Raptor Cluster": lyrMarkerCluster,
-//                "Eagle Poly": lyrEaglePoly,
-//                "PoltekJember Image":lyrPoltekJember,
-//                "Unet1 Image":lyrUnet1,
-//                "Unet2 Image":lyrUnet2,
-//                "Unet3 Image":lyrUnet3,
-//                "Unet4 Image":lyrUnet4,
-//                "Gor Perjuangan 45":mrkGorPerjuangan,
-//                "JTI":plyJTI,
-//                "Jalan bangke":plnToPolije
-//                "PoltekJember Vector":fgpPolije,
-                "Drawn Items":fgpDrawnItems
-            };
-            
-            ctlLayers = L.control.layers(objBasemaps, objOverlays).addTo(mymap);
-            
-            
-            
-
             //                setInterval(function(){
             //                    //every 5 second is gonna call the locate methodof the map object
             //                    mymap.locate();
@@ -343,6 +253,104 @@
             ctlScale = L.control.scale({position:'bottomleft', metric:false, maxWidth:200}).addTo(mymap);
             
             ctlStyle = L.control.styleEditor({position: 'topleft'}).addTo(mymap);
+            
+            // **************** Layer Initialization *****************************
+            
+//            lyrOSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png');
+            lyrOSM = L.tileLayer.provider('OpenStreetMap.Mapnik');            
+            lyrTopo = L.tileLayer.provider('OpenTopoMap');
+            lyrImagery = L.tileLayer.provider('Esri.WorldImagery');
+            lyrOutdoors = L.tileLayer.provider('Thunderforest.Outdoors');
+            lyrWatercolor = L.tileLayer.provider('Stamen.Watercolor');
+            
+            lyrGoogle = L.tileLayer('http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}');
+            mymap.addLayer(lyrOSM);
+            
+            
+            lyrPoltekJember = L.imageOverlay('img/PoletekRasterLayer3jadi.PNG', [[-8.154097, 113.719472],[-8.161585, 113.726757]], {opacity:0.5}).addTo(mymap);
+            
+            lyrUnet1 = L.imageOverlay('img/Unet1jadi.PNG', [[-8.158042, 113.714356],[-8.163717, 113.724237]]).addTo(mymap);
+            lyrUnet2 = L.imageOverlay('img/Unet2jadi.PNG', [[-8.163717, 113.724237],[-8.170241, 113.714942]]).addTo(mymap);
+            lyrUnet3 = L.imageOverlay('img/Unet3jadi.PNG', [[-8.170241, 113.714942],[-8.163713, 113.710393]]).addTo(mymap);
+            lyrUnet4 = L.imageOverlay('img/Unet4jadi.PNG', [[-8.163713, 113.714348],[-8.161144, 113.712687]]).addTo(mymap);
+            
+            mrkGorPerjuangan = L.marker([-8.159631, 113.720768], {draggable:true});
+            mrkGorPerjuangan.bindTooltip("Gor Perjuangan 45");
+            
+            
+            
+            plyJTI = L.polygon([[[-8.157877, 113.722245],[-8.158222, 113.723248],[-8.157448, 113.723495],[-8.157215, 113.722503]],[[-8.157417, 113.722708],[-8.157463, 113.722894],[-8.157614, 113.723264],[-8.157715, 113.723226],[-8.157563, 113.722853],[-8.157569, 113.722829],[-8.157513, 113.722668]],[[-8.156688, 113.722927],[-8.156857, 113.723469],[-8.157239, 113.723346],[-8.157059, 113.722793]]],{color:'red',fillColor:'yellow',fillOpacity:0.8});
+
+            plnToPolije = L.polyline([[[-8.160553, 113.721017],[-8.161276, 113.723027],[-8.161722, 113.723456],[-8.163079, 113.724079],[-8.163179, 113.724173],[-8.163264, 113.725031],[-8.163285, 113.725471],[-8.163773, 113.727102],[-8.163285, 113.727242],[-8.163126, 113.726855]],[[-8.160553, 113.721017],[-8.161276, 113.723027],[-8.161722, 113.723456],[-8.163079, 113.724079],[-8.163179, 113.724173],[-8.163264, 113.725031],[-8.163285, 113.725471],[-8.162909, 113.725562],[-8.162979, 113.725943],[-8.163001, 113.726254],[-8.163126, 113.726855]],[[-8.157672, 113.722285],[-8.157815, 113.722864]]], {color:'purple'});
+            //two line is an array of array
+            
+            //delete all layer that addTo(mymap)
+            fgpPolije = L.featureGroup([plnToPolije, plyJTI]).addTo(mymap); 
+            fgpDrawnItems = new L.featureGroup();
+            fgpDrawnItems.addTo(mymap);
+            //Drawn Items is feature of leaflet.draw
+            
+            lyrEagleNests = L.geoJSON.ajax('data/nest/wildlife_eagle.geojson',{pointToLayer:returnEagleMarker}).addTo(mymap);
+//            , filter:filterEagleNests
+//            lyrEagleNests.on('data:loaded',function(){
+//               mymap.fitBounds(lyrEagleNests.getBounds());//get location (rectangle) for first time loaded
+//                lyrEagleNests.addTo(mymap);
+//            });
+//            lyrEaglePoly = L.geoJSON.ajax('data/nest/client_poly.geojson',{onEachFeature:returnEaglePoly}).addTo(mymap);
+            
+            lyrMarkerCluster = L.markerClusterGroup();
+            
+            lyrRaptorNests = L.geoJSON.ajax('data/nest/wildlife_raptor.geojson',{pointToLayer:returnRaptorMarker});
+            lyrRaptorNests.on('data:loaded',function(){
+                lyrMarkerCluster.addLayer(lyrRaptorNests);
+                lyrMarkerCluster.addTo(mymap); // Does not add to map (when comment), but add in obj overlays
+            }); 
+            
+            lyrClientLines = L.geoJSON.ajax('data/nest/client_lines.geojson',{style:styleClientLinears, onEachFeature:processClientLinears}).addTo(mymap);
+            
+            lyrBUOWL = L.geoJSON.ajax('data/nest/wildlife_buowl.geojson',{style:styleBUOWL, onEachFeature:processBUOWL,filter:filterBUOWL}).addTo(mymap);
+            
+            lyrGBH = L.geoJSON.ajax('data/nest/wildlife_gbh.geojson',{style:{color:'fuchsia'}}).bindTooltip("GBH Nesting Area").addTo(mymap);
+            //add function (style) straight/on options
+            
+            // **************** Setup Layer Control *****************************
+            
+            objBasemaps = {
+                
+                "Open Street Maps": lyrOSM,
+                "Topo Map": lyrTopo,
+                "Imagery": lyrImagery,
+                "Outdoors":lyrOutdoors,
+                "Watercolor": lyrWatercolor,
+                "Google Maps": lyrGoogle
+            };
+            //the var must be above object overlays
+            objOverlays = {
+                "Client Linears": lyrClientLines,
+                "Burrowing Owl Habitat": lyrBUOWL,
+                "Eagle Nest": lyrEagleNests,
+                "Raptor Nest": lyrRaptorNests,
+                "GBH Rookeries":lyrGBH,
+                "Raptor Cluster": lyrMarkerCluster,
+//                "Eagle Poly": lyrEaglePoly,
+//                "PoltekJember Image":lyrPoltekJember,
+//                "Unet1 Image":lyrUnet1,
+//                "Unet2 Image":lyrUnet2,
+//                "Unet3 Image":lyrUnet3,
+//                "Unet4 Image":lyrUnet4,
+//                "Gor Perjuangan 45":mrkGorPerjuangan,
+//                "JTI":plyJTI,
+//                "Jalan bangke":plnToPolije
+//                "PoltekJember Vector":fgpPolije,
+                "Drawn Items":fgpDrawnItems
+            };
+            
+            ctlLayers = L.control.layers(objBasemaps, objOverlays).addTo(mymap);
+            
+            
+            
+
+            // **************** Setup Draw Control *****************************
                 
             ctlDraw = new L.Control.Draw({
                 //8.50
@@ -412,6 +420,9 @@
                     // if it find a location it triger a location found event, if it does not find a location then it triggers a location error event
                 }
             });
+            
+            // **************** Location Events *****************************
+            
             // After it make another event handler
             mymap.on('locationfound', function(e) {
                 console.log(e);
@@ -458,60 +469,87 @@
                 mrkGorPerjuangan.setTooltipContent("Current Location: "+mrkGorPerjuangan.getLatLng().toString()+"<br>"+"Distance to Gor Perjuangan 45: "+mrkGorPerjuangan.getLatLng().distanceTo([-8.159631, 113.720768]).toFixed(0)+" m");
             }); 
 
-            $("#btnLocate").click(function() {
-                mymap.locate();
-            });
-
-            $("#btnZocalo").click(function() {
-                mymap.setView([-8.16150, 113.72644], 17);
-                mymap.openPopup(popZocalo); 
-            });
             
-            $("#btnGor45").click(function(){
-                mymap.setView([-8.159631, 113.720768]);
-                mrkGorPerjuangan.setLatLng([-8.159631, 113.720768]);
-                mrkGorPerjuangan.setTooltipContent("Gor 45");
-            });
-            
-            $("#btnToGor45").click(function(){
-                mymap.fitBounds(plnToPolije.getBounds());
-                //zoom to the latlng bounds
-            });
-            
-            $("#sldOpacity").on('change', function(){
-                //inside function has responding to an event on #sldopacity
-                $("#image-opacity").html(this.value);
-                //we just returning the value of the slide, and displaying it with a span tag
-                lyrPoltekJember.setOpacity(this.value);
-            });
-            
-            $("#btnColor").on('click', function(){
-                fgpPolije.setStyle({color:'purple', fillColor:'green',fillOpacity:0.8});
-            });
-            
-            
-            //add layer to fgp
-            $("#btnAddGor45").click(function(){
-//                fgpPolije.addLayer(mrkGorPerjuangan);
-                //make it toggle
-                if (fgpPolije.hasLayer(mrkGorPerjuangan)) {
-                    fgpPolije.removeLayer(mrkGorPerjuangan);
-                    $("#btnAddGor45").html("Add Gor 45 To Polije Vectors");
-                } else {
-                    fgpPolije.addLayer(mrkGorPerjuangan);
-                    $("#btnAddGor45").html("Remove Gor 45 From Polije Vectors");
-                }
-            });
-
-            //
         });
-
-        function LatLngToArrayString(ll) {
-            //  this funtion take a latlng object
-            //to return latitude and longitude in single array
-            return "[" + ll.lat.toFixed(5) + ", " + ll.lng.toFixed(5) + "]";
-        }
+        
         //we must write in outside Doc ready function, wait until a whole page loaded before it executed any of JS code. and because we can't declare a function inside another function 
+        
+        // **************** BUOWL Function *****************************
+        
+        //        style:styleBUOWL, onEachFeature:processBUOWL
+        function styleBUOWL(json){
+            var att = json.properties;
+            switch (att.hist_occup){
+                case 'Yes':
+                    return {color:'deeppink', fillColor:'yellow'};
+                    break;
+                case 'Undetermined':
+                    return {color:'yellow'};
+                    break; 
+            }
+        }
+        
+        function processBUOWL(json, lyr){
+                var att = json.properties;
+                lyr.bindTooltip("<h4>Habitat ID: "+att.habitat_id+"</h4>Historically Occupied: "+att.hist_occup+"<br>Status: "+att.recentstatus);
+                
+            }
+        
+        function filterBUOWL(json){
+                var att = json.properties;
+                if (att.recentstatus=='REMOVED') {
+                    //mean doesn't include
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        
+        // **************** Client Linears Function *****************************
+        
+        function styleClientLinears(json){
+            //            A Function defining the Path options for styling GeoJSON lines and polygons, called internally when data is added. The default value is to not override any defaults:
+            //function (geoJsonFeature) {
+            //    return {}
+            //}
+            var att = json.properties;
+            switch (att.type) {
+                    case 'Pipeline':
+                        return {color:'peru'};
+                        break;
+                    case 'Flowline':
+                        return {color:'navy'};
+                        break;
+                    case 'Flowline, est.':
+                        return {color:'navy', dashArray:"5,5"};
+                        break;
+                    case 'Electric Line':
+                        return {color:'darkgreen'};
+                        break;
+                    case 'Access Road - Confirmed':
+                        return {color:'darkred'};
+                        break;
+                    case 'Access Road - Estimated':
+                        return {color:'darkred', dashArray:"5,5"};
+                        break;
+                    case 'Extraction':
+                        return {color:'indigo'};
+                        break;
+                    default:
+                        return {color:'darkgoldenrod'};
+                        break;
+            }
+        }
+
+        function processClientLinears(json, lyr) {
+            //        A Function that will be called once for each created Feature, after it has been created and styled. Useful for attaching events and popups to features. The default is to do nothing with the newly created layers:
+            //function (feature, layer) {}
+            var att = json.properties;
+            lyr.bindTooltip("<h4>Linear Project: "+att.Project+"</h4>"+att.type+"<br>ROW Width: "+att.row_width);
+        }
+        
+        // **************** Eagle Function *****************************
+        
         function returnEagleMarker(json, latlng){
 //            //this function is going to get run on every single json object , json object itself have access to this variable (json) and then coordinate will have access to this variable
             var att = json.properties;
@@ -561,6 +599,8 @@
 //            }
 //        }
         
+        // **************** Raptor Function ***************************** 
+        
         function returnRaptorMarker(json, latlng){
             //            A Function defining how GeoJSON points spawn Leaflet layers. It is internally called when data is added, passing the GeoJSON point feature and its LatLng. The default is to spawn a default Marker:
             //function(geoJsonPoint, latlng) {
@@ -591,76 +631,69 @@
             }
             return L.circle(latlng, optRaptor).bindPopup("<h4>Raptor Nest: "+att.Nest_ID+"</h4>Status: "+att.recentstatus+"<br>Species: "+att.recentspecies+"<br>Last Survey: "+att.lastsurvey);
         }
+        
+        // **************** JQuery Event Handlers *****************************
+        
+        $("#btnLocate").click(function() {
+                mymap.locate();
+            });
 
-        function styleClientLinears(json){
-            //            A Function defining the Path options for styling GeoJSON lines and polygons, called internally when data is added. The default value is to not override any defaults:
-            //function (geoJsonFeature) {
-            //    return {}
-            //}
-            var att = json.properties;
-            switch (att.type) {
-                    case 'Pipeline':
-                        return {color:'peru'};
-                        break;
-                    case 'Flowline':
-                        return {color:'navy'};
-                        break;
-                    case 'Flowline, est.':
-                        return {color:'navy', dashArray:"5,5"};
-                        break;
-                    case 'Electric Line':
-                        return {color:'darkgreen'};
-                        break;
-                    case 'Access Road - Confirmed':
-                        return {color:'darkred'};
-                        break;
-                    case 'Access Road - Estimated':
-                        return {color:'darkred', dashArray:"5,5"};
-                        break;
-                    case 'Extraction':
-                        return {color:'indigo'};
-                        break;
-                    default:
-                        return {color:'darkgoldenrod'};
-                        break;
-            }
-        }
-
-        function processClientLinears(json, lyr) {
-            //        A Function that will be called once for each created Feature, after it has been created and styled. Useful for attaching events and popups to features. The default is to do nothing with the newly created layers:
-            //function (feature, layer) {}
-            var att = json.properties;
-            lyr.bindTooltip("<h4>Linear Project: "+att.Project+"</h4>"+att.type+"<br>ROW Width: "+att.row_width);
-        }
-        
-//        style:styleBUOWL, onEachFeature:processBUOWL
-        function styleBUOWL(json){
-            var att = json.properties;
-            switch (att.hist_occup){
-                case 'Yes':
-                    return {color:'deeppink', fillColor:'yellow'};
-                    break;
-                case 'Undetermined':
-                    return {color:'yellow'};
-                    break; 
-            }
-        }
-        
-        function processBUOWL(json, lyr){
-                var att = json.properties;
-                lyr.bindTooltip("<h4>Habitat ID: "+att.habitat_id+"</h4>Historically Occupied: "+att.hist_occup+"<br>Status: "+att.recentstatus);
-                
-            }
-        
-        function filterBUOWL(json){
-                var att = json.properties;
-                if (att.recentstatus=='REMOVED') {
-                    //mean doesn't include
-                    return false;
+            $("#btnZocalo").click(function() {
+                mymap.setView([-8.16150, 113.72644], 17);
+                mymap.openPopup(popZocalo); 
+            });
+            
+            $("#btnGor45").click(function(){
+                mymap.setView([-8.159631, 113.720768]);
+                mrkGorPerjuangan.setLatLng([-8.159631, 113.720768]);
+                mrkGorPerjuangan.setTooltipContent("Gor 45");
+            });
+            
+            $("#btnToGor45").click(function(){
+                mymap.fitBounds(plnToPolije.getBounds());
+                //zoom to the latlng bounds
+            });
+            
+            $("#sldOpacity").on('change', function(){
+                //inside function has responding to an event on #sldopacity
+                $("#image-opacity").html(this.value);
+                //we just returning the value of the slide, and displaying it with a span tag
+                lyrPoltekJember.setOpacity(this.value);
+            });
+            
+            $("#btnColor").on('click', function(){
+                fgpPolije.setStyle({color:'purple', fillColor:'green',fillOpacity:0.8});
+            });
+            
+            
+            //add layer to fgp
+            $("#btnAddGor45").click(function(){
+//                fgpPolije.addLayer(mrkGorPerjuangan);
+                //make it toggle
+                if (fgpPolije.hasLayer(mrkGorPerjuangan)) {
+                    fgpPolije.removeLayer(mrkGorPerjuangan);
+                    $("#btnAddGor45").html("Add Gor 45 To Polije Vectors");
                 } else {
-                    return true;
+                    fgpPolije.addLayer(mrkGorPerjuangan);
+                    $("#btnAddGor45").html("Remove Gor 45 From Polije Vectors");
                 }
-            }
+            });
+
+        
+        
+
+
+
+        
+
+        
+        // **************** General Function *****************************
+        
+        function LatLngToArrayString(ll) {
+            //  this funtion take a latlng object
+            //to return latitude and longitude in single array
+            return "[" + ll.lat.toFixed(5) + ", " + ll.lng.toFixed(5) + "]";
+        }
     </script>
 </body>
 
