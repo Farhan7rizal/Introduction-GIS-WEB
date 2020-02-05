@@ -54,7 +54,18 @@
                 height: 97.9vh;
                 background-color: salmon;
 */
-
+        
+        }
+        
+        #divProject {
+            background-color: beige;
+        }
+        
+        .errorMsg {
+/*            class in css in applying in more than one element*/
+            padding: 0;
+            text-align: center;
+            background-color: red;
         }
 
         #header {
@@ -63,47 +74,6 @@
         }
     </style>
     
-    <!--    ***************  Begin Leaflet.Draw-->
-        
-<!--
-        <script src="src/plugins/leaflet-draw/Leaflet.draw.js"></script>
-        <script src="src/plugins/leaflet-draw/Leaflet.Draw.Event.js"></script>
-        <link rel="stylesheet" href="src/plugins/leaflet-draw/leaflet.draw.css"/>
-
-        <script src="src/plugins/leaflet-draw/Toolbar.js"></script>
-        <script src="src/plugins/leaflet-draw/Tooltip.js"></script>
-
-        <script src="src/plugins/leaflet-draw/ext/GeometryUtil.js"></script>
-        <script src="src/plugins/leaflet-draw/ext/LatLngUtil.js"></script>
-        <script src="src/plugins/leaflet-draw/ext/LineUtil.Intersect.js"></script>
-        <script src="src/plugins/leaflet-draw/ext/Polygon.Intersect.js"></script>
-        <script src="src/plugins/leaflet-draw/ext/Polyline.Intersect.js"></script>
-        <script src="src/plugins/leaflet-draw/ext/TouchEvents.js"></script>
-
-        <script src="src/plugins/leaflet-draw/draw/DrawToolbar.js"></script>
-        <script src="src/plugins/leaflet-draw/draw/handler/Draw.Feature.js"></script>
-        <script src="src/plugins/leaflet-draw/draw/handler/Draw.SimpleShape.js"></script>
-        <script src="src/plugins/leaflet-draw/draw/handler/Draw.Polyline.js"></script>
-        <script src="src/plugins/leaflet-draw/draw/handler/Draw.Circle.js"></script>
-        <script src="src/plugins/leaflet-draw/draw/handler/Draw.Marker.js"></script>
-        <script src="src/plugins/leaflet-draw/draw/handler/Draw.Polygon.js"></script>
-        <script src="src/plugins/leaflet-draw/draw/handler/Draw.Rectangle.js"></script>
-
-
-        <script src="src/plugins/leaflet-draw/edit/EditToolbar.js"></script>
-        <script src="src/plugins/leaflet-draw/edit/handler/EditToolbar.Edit.js"></script>
-        <script src="src/plugins/leaflet-draw/edit/handler/EditToolbar.Delete.js"></script>
-
-        <script src="src/plugins/leaflet-draw/Control.Draw.js"></script>
-
-        <script src="src/plugins/leaflet-draw/edit/handler/Edit.Poly.js"></script>
-        <script src="src/plugins/leaflet-draw/edit/handler/Edit.SimpleShape.js"></script>
-        <script src="src/plugins/leaflet-draw/edit/handler/Edit.Circle.js"></script>
-        <script src="src/plugins/leaflet-draw/edit/handler/Edit.Rectangle.js"></script>
-        <script src="src/plugins/leaflet-draw/edit/handler/Edit.Marker.js"></script>
--->
-        
-<!--    **************  End of Lealet Draw-->
 
 <!--    ***************  Begin Leaflet.Draw-->         <script src="src/plugins/leaflet-draw/Leaflet.draw.js"></script> <script src="src/plugins/leaflet-draw/Leaflet.Draw.Event.js"></script> <link rel="stylesheet" href="src/plugins/leaflet-draw/leaflet.draw.css"/> <script src="src/plugins/leaflet-draw/Toolbar.js"></script> <script src="src/plugins/leaflet-draw/Tooltip.js"></script> <script src="src/plugins/leaflet-draw/ext/GeometryUtil.js"></script> <script src="src/plugins/leaflet-draw/ext/LatLngUtil.js"></script> <script src="src/plugins/leaflet-draw/ext/LineUtil.Intersect.js"></script> <script src="src/plugins/leaflet-draw/ext/Polygon.Intersect.js"></script> <script src="src/plugins/leaflet-draw/ext/Polyline.Intersect.js"></script> <script src="src/plugins/leaflet-draw/ext/TouchEvents.js"></script> <script src="src/plugins/leaflet-draw/draw/DrawToolbar.js"></script> <script src="src/plugins/leaflet-draw/draw/handler/Draw.Feature.js"></script> <script src="src/plugins/leaflet-draw/draw/handler/Draw.SimpleShape.js"></script> <script src="src/plugins/leaflet-draw/draw/handler/Draw.Polyline.js"></script> <script src="src/plugins/leaflet-draw/draw/handler/Draw.Circle.js"></script> <script src="src/plugins/leaflet-draw/draw/handler/Draw.Marker.js"></script> <script src="src/plugins/leaflet-draw/draw/handler/Draw.Polygon.js"></script> <script src="src/plugins/leaflet-draw/draw/handler/Draw.Rectangle.js"></script> <script src="src/plugins/leaflet-draw/draw/handler/Draw.CircleMarker.js"></script> <script src="src/plugins/leaflet-draw/edit/EditToolbar.js"></script> <script src="src/plugins/leaflet-draw/edit/handler/EditToolbar.Edit.js"></script> <script src="src/plugins/leaflet-draw/edit/handler/EditToolbar.Delete.js"></script> <script src="src/plugins/leaflet-draw/Control.Draw.js"></script> <script src="src/plugins/leaflet-draw/edit/handler/Edit.Poly.js"></script> <script src="src/plugins/leaflet-draw/edit/handler/Edit.SimpleShape.js"></script> <script src="src/plugins/leaflet-draw/edit/handler/Edit.CircleMarker.js"></script> <script src="src/plugins/leaflet-draw/edit/handler/Edit.Circle.js"></script> <script src="src/plugins/leaflet-draw/edit/handler/Edit.Rectangle.js"></script> <script src="src/plugins/leaflet-draw/edit/handler/Edit.Marker.js"></script> <!--    **************  End of Lealet Draw-->
 
@@ -116,7 +86,7 @@
         <div id="mapdiv" class="col-md-9"></div>
         kebaliks
 -->
-    <div class="row col-md-12">
+<!--    <div class="row col-md-12">-->
         <div id="header" class="col-md-12">
             <h1 class="text-center">Leaflet</h1>
         </div>
@@ -125,7 +95,7 @@
 <!--        using this without boostrap, to ... something in popup-->
         <div id="side-bar" class="col-md-12">
            
-            <button id="btnLocate" class="btn btn-primary btn-block">Locate</button>
+<!--
             <button id="btnZocalo" class="btn btn-primary btn-block">Zoom To Zocalo</button>
             <button id="btnGor45" class="btn btn-primary btn-block">Zoom To Gor Perjuangan 45</button>
             <button id="btnToGor45" class="btn btn-primary btn-block">Zoom To Gor Perjuangan 45 Road</button>
@@ -135,12 +105,31 @@
             <h4> Map Center: <span id='map-center'></span></h4>
             <h4> Mouse Location: <span id='mouse-location'></span></h4>
             <h4>Image Opacity: <span id='image-opacity'>0.5</span><span>: </span><input type="range" id="sldOpacity" min="0" max="1" step="0.1" value="0.5"></h4>
+-->
             
             <!--                add id so we can select with JQUERY and add content to it-->
+            
+            <button id="btnLocate" class="btn btn-primary btn-block">Locate</button><br>
+            <div id="divProject" class="col-xs-12">
+            <div id="divProjectLabel" class="text-center col-xs-12">
+                <h4>Linear Projects</h4> 
+            </div>
+            <div id="divProjectError" class="errorMsg col-xs-12"></div>            
+            <div id="findProject" class="form-group row">
+                <div class="col-sm-6">
+<!--                   sm not xs-->
+                    <input type="text" id="txtFindProject" class="form-control" placeholder="Project ID">
+                </div>
+                <div class="col-sm-6">
+                    <button id="btnFindProject" class="btn btn-primary btn-block">Find Project</button>
+                </div>
+            </div>
+            <div class="" id="divProjectData"></div>
+        </div>
         </div>
         <div id="mapdiv" class="col-md-12"></div>
 
-    </div>
+<!--    </div>-->
 
 
     <script>
