@@ -175,6 +175,7 @@
         var ctlStyle;
         var objBasemaps;
         var objOverlays;
+        var lyrSearch;
 //        var icnRedSprite;
 //        var icnVioletSprite;
 //        var icnLAMtree;
@@ -537,6 +538,60 @@
             lyr.bindTooltip("<h4>Linear Project: "+att.Project+"</h4>"+att.type+"<br>ROW Width: "+att.row_width);
         }
         
+        
+        
+        function returnClientByID(id){
+            var arLayers = lyrClientLines.getLayers();
+            for (i=0;i<arLayers.length-1;i++){
+                var featureID = arLayers[i].feature.properties.Project;
+                console.log(featureID);
+                //that attribute hold the id of the feature
+                if(featureID==id){
+                    return arLayers[i];
+                }
+            }
+            return false;
+        }
+        
+         $("#btnFindProject").click(function(){
+            //click event of search button
+            var id = $("#txtFindProject").val();
+                //retrieve id from text box
+            var lyr = returnClientByID(id);
+                //pass it to the return returnProjectByID
+            if (lyr){
+                //if feature is found
+                //add feature to search group layer
+                //this is not really necesarry but it makes for a nice effect because we can use a search result group layer to highlight the feature that was found 
+                //we could zoom to a feature , But if there are a lot a feature in close proximity it may not be cleared which what exactly is a feature that we search for 
+
+                //that require a two step process
+                //FIRST STEP  we have to remove the existing search result layer and we do that with this code below
+                if (lyrSearch) {
+                    lyrSearch.remove();
+                    //if search result layer is exist then we remove from the map. again, this work because if there's no existing search layer of the variable that we use for the reference the search result layer will be undefined, undefined mean false
+                }
+                //SECOND STEP is to add the feature we found to the search result layer and we do that by creating an entirely new GeoJson layer and passing it a GeoJson representation of the feature we found by calling GeoJson method by copying it and we style it, so it don't change an original GeoJson
+                lyrSearch = L.geoJSON(lyr.toGeoJSON(), {style:{color:'yellow',weight:10, opacity:0.5}}).addTo(mymap);
+                //NEXT is we need Zoon to a feature that we found
+                mymap.fitBounds(lyr.getBounds().pad(1));
+                //and expanding that a bit using the pad method
+                //FINALY we populate side bar with data, we do that by first creating a vat taht hold properties object of a feature
+                var att = lyr.feature.properties;
+                $("#divProjectData").html("<h4 class='text-center'>Attributes</h4><h5>Type:"+att.type+"</h5><h5>Row Widht: "+att.row_widht+"m</h5>");
+                    //with JQuery
+            } else {
+                //report an error if project found that matches the ID, executed if no lyr was found
+                $("#divProjectError").html("***** Project ID not found *****");
+            }
+        });
+        //REASON for create a new layer later on ????
+        //But basically it was needed to make a copy of the feature rather than using feature it self
+        //if programmed other languanges you may understand the diffrence between
+            //passing a variable by reference and
+            //passing passing it by value
+        //in JS OBJECT are ALWAYS passed by reference.
+        
         // **************** Eagle Function *****************************
         
         function returnEagleMarker(json, latlng){
@@ -668,57 +723,6 @@
                 }
             });
 
-        
-            $("#btnFindProject").click(function(){
-                //click event of search button
-                var id = $("#txtFindProject").val();
-                    //retrieve id from text box
-                var lyr = returnClientLinebyID(id);
-                    //pass it to the return returnProjectByID
-                if (lyr){
-                    //if feature is found
-                    //add feature to search group layer
-                    //this is not really necesarry but it makes for a nice effect because we can use a search result group layer to highlight the feature that was found 
-                    //we could zoom to a feature , But if there are a lot a feature in close proximity it may not be cleared which what exactly is a feature that we search for 
-                    
-                    //that require a two step process
-                    //FIRST STEP  we have to remove the existing search result layer and we do that with this code below
-                    if (lyrSearch) {
-                        lyrSearch.remove();
-                        //if search result layer is exist then we remove from the map. again, this work because if there's no existing search layer of the variable that we use for the reference the search result layer will be undefined, undefined mean false
-                    }
-                    //SECOND STEP is to add the feature we found to the search result layer and we do that by creating an entirely new GeoJson layer and passing it a GeoJson representation of the feature we found by calling GeoJson method and we style it
-                    lyrSearch = L.geoJSON(lyr.toGeoJSON(), {style:{color:'red',weight:10, opacity:0.5}}).addTo(mymap);
-                    //NEXT is we need Zoon to a feature that we found
-                    mymap.fitBounds(lyr.getBounds().pad(i));
-                    //and expanding that a bit using the pad method
-                    //FINALY we populate side bar with data, we do that by first creating a vat taht hold properties object of a feature
-                    var att = lyr.feature.properties;
-                    $("#divProjectData").html("...");
-                        //with JQuery
-                } else {
-                    //report an error if project found that matches the ID, executed if no lyr was found
-                    $("#divProjectError").html("...");
-                }
-            });
-        //REASON for create a new layer later on ????
-        //But basically it was needed to make a copy of the feature rather than using feature it self
-        //if programmed other languanges you may understand the diffrence between
-            //passing a variable by reference and
-            //passing passing it by value
-        //in JS OBJECT are ALWAYS passed by reference.
-
-        //REMEMBER in a FUNCTION we didn't find anything and return false 
-                    //in a JS there are few thing to evaluate as false    
-                        //the keyword false 
-                        //zero number
-                        //keyword 'no'
-                        //empty string 
-                        //undefined variable that's is one has ben declared but has no value assign to it 
-                    //and pretty much everything else evaluates as true
-        
-
-        
         // **************** General Function *****************************
         
         function LatLngToArrayString(ll) {
@@ -730,12 +734,11 @@
         
         
         function returnProjectByID(id){
-            //id enter in a text box
-            
+            //id enter in a text box            
             var arLayers = lyrClientLines.getLayers();
             //get array of layer
                 //because it's a group layer, we have to get layer method that return all the layers in the group as an array 
-            for (i=0;arLayer.length<=i;i++) {
+            for (i=0;i<arLayer.length-1;i++) {
                 //loop through all the layers
                 //compare project ID of feature to parameter passed to funtion 
                 var featureID  = arLayers.feature.properties.Property;
@@ -750,7 +753,16 @@
             //if id not match
         }
         
+        //REMEMBER in a FUNCTION we didn't find anything and return false 
+                    //in a JS there are few thing to evaluate as false    
+                        //the keyword false 
+                        //zero number
+                        //keyword 'no'
+                        //empty string 
+                        //undefined variable that's is one has ben declared but has no value assign to it 
+                    //and pretty much everything else evaluates as true
         
+        //REMEMBER = , == , === are different
     </script>
 </body>
 
