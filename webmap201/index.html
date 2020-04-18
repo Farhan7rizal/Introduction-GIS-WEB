@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="src/plugins/leaflet-mapkey/L.Icon.Mapkey.css">
     <link rel="stylesheet" href="src/plugins/MarkerCluster.css">
     <link rel="stylesheet" href="src/plugins/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="src/jquery-ui.min.css">
     
 <!--    be carefull with linux because linux is case sensitive-->
     
@@ -45,7 +46,7 @@
     <script src="src/plugins/leaflet.awesome-markers.min.js"></script>
     <script src="src/plugins/leaflet-mapkey/L.Icon.Mapkey.js"></script>
     <script src="src/plugins/leaflet.markercluster.js"></script>
-    
+    <script src="src/jquery-ui.min.js"></script>
     <style>
         #mapdiv {
             height: 735px;
@@ -115,13 +116,13 @@
                 <h4>Linear Projects</h4> 
             </div>
             <div id="divProjectError" class="errorMsg col-xs-12"></div>            
-            <div id="findProject" class="form-group row">
+            <div id="findProject" class="form-group row has-error">
                 <div class="col-sm-6">
 <!--                   sm not xs-->
                     <input type="text" id="txtFindProject" class="form-control" placeholder="Project ID">
                 </div>
                 <div class="col-sm-6">
-                    <button id="btnFindProject" class="btn btn-primary btn-block">Find Project</button>
+                    <button id="btnFindProject" class="btn btn-primary btn-block" disabled>Find Project</button>
                 </div>
             </div>
             <div class="" id="divProjectData"></div>
@@ -176,6 +177,7 @@
         var objBasemaps;
         var objOverlays;
         var lyrSearch;
+        var arProjectIDs = [];
 //        var icnRedSprite;
 //        var icnVioletSprite;
 //        var icnLAMtree;
@@ -297,6 +299,13 @@
             }); 
             
             lyrClientLines = L.geoJSON.ajax('data/nest/client_lines.geojson',{style:styleClientLinears, onEachFeature:processClientLinears}).addTo(mymap);
+            //leaflet ajax plugin includes an even called 'data:loaded' get fired when it's happen
+            lyrClientLines.on('data:loaded',function(){
+                arProjectIDs.sort(function(a,b){return a-b}); //just call sort() and function that idk to it
+                $("#txtFindProject").autocomplete({
+                    source:arProjectIDs
+                });
+            })
             
             lyrBUOWL = L.geoJSON.ajax('data/nest/wildlife_buowl.geojson',{style:styleBUOWL, onEachFeature:processBUOWL,filter:filterBUOWL}).addTo(mymap);
             
@@ -536,6 +545,7 @@
             //function (feature, layer) {}
             var att = json.properties;
             lyr.bindTooltip("<h4>Linear Project: "+att.Project+"</h4>"+att.type+"<br>ROW Width: "+att.row_width);
+            arProjectIDs.push(att.Project.toString());//Push feature to the arProjectIDs and converted to string
         }
         
         
@@ -552,6 +562,24 @@
             }
             return false;
         }
+
+        function testClientLineID(id){
+            //to test that id is exit or not, if not then disable button and populate message with css
+            if (arProjectIDs.indexOf(id)<0){
+                $("#divFindProject").addClass("has-error");
+                $("#divProjectError").html("**** PROJECT ID NOT FOUND ****");
+                $("#btnFindProject").attr("disabled", true);
+            } else {
+                $("#divFindProject").removeClass("has-error");
+                $("#divProjectError").html("");
+                $("#btnFindProject").attr("disabled", false);
+            }
+        }
+
+        $("#txtFindProject").on('keyup paste', function(){
+            var id = $("#txtFindProject").val();
+            testClientLineID(id);
+        });
         
          $("#btnFindProject").click(function(){
             //click event of search button
