@@ -170,6 +170,18 @@
                     <button id="btnFindEagle" class="btn btn-primary btn-block" disabled>Find Eagle Nest</button>
                 </div>
             </div>
+            <div id="divFilterEagle" class="col-sm-12 row">
+                <div class="col-sm-4">
+                    <input type="radio" name="fltEagle" value="ALL" checked>All
+                    <!-- checked is important in JS function-->
+                </div>
+                <div class="col-sm-4">
+                    <input type="radio" name="fltEagle" value="ACTIVE NEST">Active
+                </div>
+                <div class="col-sm-4">
+                    <input type="radio" name="fltEagle" value="INACTIVE LOCATION">Inactive
+                </div>
+            </div>
             <div class="" id="divEagleData"></div>
         </div>
         <div id="divRaptor" class="col-xs-12">
@@ -346,7 +358,7 @@
             fgpDrawnItems.addTo(mymap);
             //Drawn Items is feature of leaflet.draw
             
-            lyrEagleNests = L.geoJSON.ajax('data/nest/wildlife_eagle.geojson',{pointToLayer:returnEagleMarker}).addTo(mymap);
+            lyrEagleNests = L.geoJSON.ajax('data/nest/wildlife_eagle.geojson',{pointToLayer:returnEagleMarker, filter:filterEagle}).addTo(mymap);
             lyrEagleNests.on('data:loaded', function(){
                     arEagleIDs.sort(function(a,b){return a-b});
                     $("#txtFindEagle").autocomplete({
@@ -736,6 +748,8 @@
         $("#lblProject").click(function(){
                 $("#divProjectData").toggle(); 
             });
+
+          
         
         // **************** Eagle Function *****************************
         
@@ -773,6 +787,18 @@
             
         }
 
+        function filterEagle(json) {
+            //don't forget to call this function in GeoJSON constructor method
+            var att = json.properties;
+            var optFilter = $("input[name=fltEagle]:checked").val();
+            // use jQuery pseudo selector to select radio button that is currently selected , and retrieve a value att and assign that o var optFIlter, checked is only one cheked radio button that selected
+            if (optFilter == "ALL") {
+                return true;
+            } else {
+                return (att.status == optFilter);
+            }
+        }
+
         $("#txtFindEagle").on('keyup paste', function(){
                 var val = $("#txtFindEagle").val();
                 testLayerAttribute(arEagleIDs, val, "Eagle Nest ID", "#divFindEagle", "#divEagleError", "#btnFindEagle");
@@ -799,7 +825,11 @@
                 $("#divEagleData").toggle(); 
             });
 
-
+            $("input[name=fltEagle]").click(function(){
+                arEagleIDs=[];
+                lyrEagleNests.refresh();
+                //refresh method is not native , it is come with leaflet.ajax plugin that we use to load a data from a disk file , IT SIMPLY reload data from the disk, but it also runs a point to layer function and filter function again , and in that filter function real work happens.
+            });
         
         // function returnEaglePoly(feature, featureLayer) {
         //         featureLayer.bindPopup(feature.properties.type);
