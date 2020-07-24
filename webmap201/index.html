@@ -140,6 +140,25 @@
                     <button id="btnFindProject" class="btn btn-primary btn-block" disabled>Find Project</button>
                 </div>
             </div>
+            <div id="divFilterProject" class="col-sm-12">
+                <div class="row">
+                <div class="col-sm-4">
+                    <input type="checkbox" name="fltProject" value="Pipeline" checked>Pipelines<br>
+                    <input type="checkbox" name="fltProject" value="Road" checked>Access Roads
+                    <button id="btnProjectFilterAll" class="btn btn-primary btn-block">Check All</button>
+                </div>
+                <div class="col-sm-5">
+                    <input type="checkbox" name="fltProject" value="Electric" checked>Electric Lines<br>
+                    <input type="checkbox" name="fltProject" value="Extraction" checked>Extractions
+                    <button id="btnProjectFilterNone" class="btn btn-primary btn-block">Uncheck All</button>
+                </div>
+                <div class="col-sm-3">
+                    <input type="checkbox" name="fltProject" value="Flowline" checked>Flowlines<br>
+                    <input type="checkbox" name="fltProject" value="Other" checked>Other
+                    <button id="btnProjectFilter" class="btn btn-primary btn-block">Filter</button>
+                </div>
+            </div>
+            </div>
             <div class="" id="divProjectData"></div>
         </div>
         <div id="divBUOWL" class="col-xs-12">
@@ -384,7 +403,7 @@
                 lyrMarkerCluster.addTo(mymap); // Does not add to map (when comment), but add in obj overlays
             }); 
             
-            lyrClientLines = L.geoJSON.ajax('data/nest/client_lines.geojson',{style:styleClientLinears, onEachFeature:processClientLinears}).addTo(mymap);
+            lyrClientLines = L.geoJSON.ajax('data/nest/client_lines.geojson',{style:styleClientLinears, onEachFeature:processClientLinears, filter:filterClientLines}).addTo(mymap);
             //leaflet ajax plugin includes an even called 'data:loaded' get fired when it's happen
             lyrClientLines.on('data:loaded',function(){
                 arProjectIDs.sort(function(a,b){return a-b}); //just call sort() and function that idk to it
@@ -668,6 +687,44 @@
             lyr.bindTooltip("<h4>Linear Project: "+att.Project+"</h4>"+att.type+"<br>ROW Width: "+att.row_width);
             arProjectIDs.push(att.Project.toString());//Push feature to the arProjectIDs and converted to string
         }
+
+        function filterClientLines(json) {
+            var arProjectFilter = [];
+            $("input[name=fltProject]").each(function(){
+                if (this.checked) {
+                    // loop through each fltProject, only checked 
+                    arProjectFilter.push(this.value);
+                }        
+            });
+
+            var att = json.properties;
+            switch (att.type) {
+                case "Pipeline":
+                    return (arProjectFilter.indexOf('Pipeline')>=0);
+                    break;
+                case "Flowline":
+                    return (arProjectFilter.indexOf('Flowline')>=0);
+                    break;
+                case "Flowline, est.":
+                    return (arProjectFilter.indexOf('Flowline, est.')>=0);
+                    break;
+                case "Electric Line":
+                    return (arProjectFilter.indexOf('Electric Line')>=0);
+                    break;
+                case "Access Road - Confirmed":
+                    return (arProjectFilter.indexOf('Road')>=0);
+                    break;
+                case "Access Road - Estimated":
+                    return (arProjectFilter.indexOf('Road')>=0);
+                    break;
+                case "Extraction":
+                    return (arProjectFilter.indexOf('Extraction')>=0);
+                    break;
+                default:
+                    return (arProjectFilter.indexOf('Other')>=0);
+                    break;
+            }
+        }
         
         
         
@@ -749,6 +806,21 @@
                 $("#divProjectData").toggle(); 
             });
 
+        $("#btnProjectFilterAll").click(function(){
+            $("input[name=fltProject]").prop('checked', true);            
+        });
+
+        $("#btnProjectFilterNone").click(function(){
+            $("input[name=fltProject]").prop('checked', false);
+            
+        });
+
+        $("#btnProjectFilter").click(function(){
+            arProjectIDs = [];   
+            lyrClientLines.refresh();
+        });
+
+            
           
         
         // **************** Eagle Function *****************************
