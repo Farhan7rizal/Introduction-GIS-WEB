@@ -31,7 +31,7 @@
     }
     
     $db = new PDO('pgsql:host=localhost;port=5432;dbname=webmap101;','postgres','Farhan7');
-    $sql = $db->prepare("INSERT INTO cdmx_attractions (id,name, image, web,category, geom) VALUES (10,:nm, :im, :wb, :ct, ST_SetSRID(ST_MakePoint(:lng, :lat), 4326))");
+    $sql = $db->prepare("INSERT INTO cdmx_attractions (id,name, image, web,category, geom) VALUES (20,:nm, :im, :wb, :ct, ST_SetSRID(ST_MakePoint(:lng, :lat), 4326))");
 
     $params = ["nm"=>$name, "im"=>$image, "wb"=>$web, "ct"=>$category, "lng"=>$longitude, "lat"=>$latitude];
 

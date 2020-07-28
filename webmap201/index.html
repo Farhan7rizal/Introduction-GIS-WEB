@@ -633,6 +633,10 @@
                     var att = lyr.feature.properties;
                     $("#divBUOWLData").html("<h4 class='text-center'>Attributes</h4><h5>Habitat: "+att.habitat+"</h5><h5>Historically Occupied: "+att.hist_occup+"</h5><h5>Recent Status: "+att.recentstatus+"</h5>");
                     $("#divBUOWLError").html("");
+                    
+                fgpDrawnItems.clearLayers();
+                fgpDrawnItems.addLayer(lyr);
+
                 } else {
                     $("#divBUOWLError").html("**** Habitat ID not found ****");
                 }
@@ -789,7 +793,11 @@
                 var att = lyr.feature.properties;
                 $("#divProjectData").html("<h4 class='text-center'>Attributes</h4><h5>Type:"+att.type+"</h5><h5>Row Widht: "+att.row_widht+"m</h5>");
                     //with JQuery
-                $("#divProjectError").html("1");
+                $("#divProjectError").html("");
+
+                fgpDrawnItems.clearLayers();
+                fgpDrawnItems.addLayer(lyr);
+
             } else {
                 //report an error if project found that matches the ID, executed if no lyr was found
                 $("#divProjectError").html("***** Project ID not found *****");
@@ -888,6 +896,10 @@
                     var att = lyr.feature.properties;
                     $("#divEagleData").html("<h4 class='text-center'>Attributes</h4><h5>Status: "+att.status+"</h5>");
                     $("#divEagleError").html("");
+                    
+                fgpDrawnItems.clearLayers();
+                fgpDrawnItems.addLayer(lyr);
+
                 } else {
                     $("#divEagleError").html("**** Eagle Nest ID not found ****");
                 }
@@ -981,6 +993,10 @@
                     mymap.setView(lyr.getLatLng(), 14);
                     $("#divRaptorData").html("<h4 class='text-center'>Attributes</h4><h5>Status: "+att.recentstatus+"</h5><h5>Species: "+att.recentspecies+"</h5><h5>Last Survey: "+att.lastsurvey+"</h5>");
                     $("#divRaptorError").html("");
+                    
+                fgpDrawnItems.clearLayers();
+                fgpDrawnItems.addLayer(lyr);
+
                 } else {
                     $("#divRaptorError").html("**** Raptor Nest ID not found ****");
                 }

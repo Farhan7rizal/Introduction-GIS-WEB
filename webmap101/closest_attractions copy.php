@@ -60,7 +60,19 @@ $sql1 = $db->prepare("SELECT ST_X(geom) as longitude FROM cdmx_attractions");
 
 $sql1->execute();
 
+while ($row = $sql1->fetch(PDO::FETCH_ASSOC)) {
+    //echo "<tr>";
+    foreach ($row as $field=>$value) {
 
+             $value; 
+    }
+    
+    //echo $value;
+    // $long = json_encode($value);
+    $long = json_decode($value);
+    // echo $long ;
+    //echo json_decode($value).",";
+}
 echo "<br>";
 $sql2 = $db->prepare("SELECT ST_Y(geom) as latitude FROM cdmx_attractions");
 // $sql = $db->prepare("SELECT id, name, category,ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(ST_X(geom), ST_Y(geom))::geography, 100000)");
@@ -72,80 +84,61 @@ $sql2 = $db->prepare("SELECT ST_Y(geom) as latitude FROM cdmx_attractions");
 
 $sql2->execute();
 
+while ($row = $sql2->fetch(PDO::FETCH_ASSOC)) {
+    //echo "<tr>";
+    foreach ($row as $field=>$value) {
+
+             $value; 
+    }
+    
+    //echo $value;
+    // $lati = json_encode($value);
+    $lati = json_decode($value);
+    // echo $lati;
+    //echo json_decode($value).",";
+}
 echo "<br>";
 $sql3 = $db->prepare("SELECT id, name, category,ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000)");
+// $sql = $db->prepare("SELECT id, name, category,ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(ST_X(geom), ST_Y(geom))::geography, 100000)");
 
-$sql4 = $db->prepare("SELECT id, name, category, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions");
-$sql4->execute();
-while ($row = $sql4->fetch(PDO::FETCH_ASSOC)) {
-    
-    foreach ($row as $field1=>$value1) {
-        if ($field1=="longitude"){
+// $longitude2 = ['lng' => ['134.32413', '127.1492','127.4492' ]];
+// $latitude2 = ['lat' => ['44.22946', '37.61572','37.71572' ]];
+// $longitude2 = ["lng" => 134.32413];
+// $latitude2 = ["lng" => 44.22946];
+// $params = [$longitude2, $latitude2];
+ $params = ["lng"=>$longitude, "lat"=>$latitude];
+// $params = ["lng"=>$long, "lat"=>$lati];
+// $params = ["lng"=>134.32413, 142.26106, "lat"=>44.22946, 44.99588];
 
-            //  echo $value1 . "<br>"; 
-            // $long = json_encode($value1);
-            $long = json_decode($value1);
-            // echo $long . "<br>" ;
-        } 
-        
-    }
-    
-    foreach ($row as $field2=>$value2) {
-        if ($field2=="latitude"){
+// for ($x = 0; $x <= 30; $x++) {
+//     // $params = ["lng"=>$long, "lat"=>$lati];
+//     // echo implode ($params);
+//    echo $long. "<br>";
+// }
 
-            //  echo $value2 . "<br>"; 
-            // $lati = json_encode($value2). ",";
-            $lati = json_decode($value2);
-            //  echo $lati;
-        } 
+echo $long;
 
-    
-    }
-    foreach ($row as $field3=>$value3) {
-        if ($field3=="id"){
+// foreach($aso_arr as $side=>$direc) { 
+//     echo $side . " => " . $direc . "\n";  
+// } 
+  
 
-            //  echo $value3 . "<br>"; 
-            // $id = json_encode($value3). ",";
-            $id = json_decode($value3);
-            //  echo "_".$id."_" ;
-        } 
-
-    
-    }
-    
-$longitude = [$long];
-$latitude = [$lati];
-
-foreach ($longitude as $lng )  {
-    $lng ."<br>";
-
-    foreach ($latitude as $lat )  {
-        $lat ."<br>";
-        
-    }
-    $params = ["lng"=>$lng, "lat"=>$lat];
-    
 $sql3->execute($params);
-echo "<br>";
+
 while ($row = $sql3->fetch(PDO::FETCH_ASSOC)) {
-    
+    //echo "<tr>";
     foreach ($row as $field=>$value) {
         if ($field=="id"){
-        json_encode($value);
-        // json_decode($value);    
-             echo $value ." "; 
+
+            //  echo $value . "<br>"; 
              
         } 
     }
     
     
-    
+    // echo json_encode($value);
+    //echo json_decode($value);
 }
-}
-  
-
-}
-
 
 ?>
 
