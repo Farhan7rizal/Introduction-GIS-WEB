@@ -61,7 +61,7 @@ $sql1 = $db->prepare("SELECT ST_X(geom) as longitude FROM cdmx_attractions");
 $sql1->execute();
 
 
-echo "<br>";
+// echo "<br>";
 $sql2 = $db->prepare("SELECT ST_Y(geom) as latitude FROM cdmx_attractions");
 // $sql = $db->prepare("SELECT id, name, category,ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(ST_X(geom), ST_Y(geom))::geography, 100000)");
 
@@ -72,11 +72,19 @@ $sql2 = $db->prepare("SELECT ST_Y(geom) as latitude FROM cdmx_attractions");
 
 $sql2->execute();
 
-echo "<br>";
-$sql3 = $db->prepare("SELECT id, name, category,ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000)");
+// echo "<br>";
+$sql3_2 = $db->prepare("SELECT id, name, category,ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000)");
 
-$sql4 = $db->prepare("SELECT id, name, category, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions");
+$sql3 = $db->prepare("SELECT id, name, category,ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000 AND category = 'Park')");
+
+$sql4 = $db->prepare("SELECT id, name, category, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE category = 'Place'");
 $sql4->execute();
+
+$sqlPark = $db->prepare("SELECT count(category)FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000) AND category = 'Park'");
+$sqlPlace = $db->prepare("SELECT count(category)FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000) AND category = 'Place'");
+$sqlOther = $db->prepare("SELECT count(category)FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000) AND category = 'Other'");
+
+/*
 while ($row = $sql4->fetch(PDO::FETCH_ASSOC)) {
     
     foreach ($row as $field1=>$value1) {
@@ -125,29 +133,373 @@ foreach ($longitude as $lng )  {
     }
     $params = ["lng"=>$lng, "lat"=>$lat];
     
-$sql3->execute($params);
+$sql3_2->execute($params);
+$sqlPlace->execute($params);
 echo "<br>";
-while ($row = $sql3->fetch(PDO::FETCH_ASSOC)) {
+while ($row = $sql3_2->fetch(PDO::FETCH_ASSOC)) {
     
     foreach ($row as $field=>$value) {
         if ($field=="id"){
         json_encode($value);
         // json_decode($value);    
-             echo $value ." "; 
-             
+             $string = $value .","; 
+            echo $string;
+            // echo substr($string, 0, -1);
+            
         } 
+        // echo $value ." ";
+        
+             
     }
-    
-    
+    // 
+    // echo $string = rtrim($string, ",");
     
 }
+
 }
   
 
 }
+*/
+// /*
+$nilai = [];
+while ($row = $sql4->fetch(PDO::FETCH_ASSOC)) {
+    
+    foreach ($row as $field1=>$value1) {
+        if ($field1=="longitude"){   
 
+            $long = json_decode($value1);
+            
+        } 
+        
+    }
+    
+    foreach ($row as $field2=>$value2) {
+        if ($field2=="latitude"){
+
+            $lati = json_decode($value2);
+            
+        } 
+
+    
+    }    
+    
+    
+    
+$longitude = [$long];
+$latitude = [$lati];
+
+foreach ($longitude as $lng )  {
+    $lng ."<br>";
+
+    foreach ($latitude as $lat )  {
+        $lat ."<br>";
+        
+    }
+    $params = ["lng"=>$lng, "lat"=>$lat];
+
+$sqlPlace->execute($params);
+$sqlPark->execute($params);
+$sqlOther->execute($params);
+echo "<br>";
+// while ($place = $sqlPlace->fetchAll()) {
+    
+            $nilai1 = [];
+             foreach ($sqlPlace as $key=>$value) {
+             if ($value !== false) {
+                //  echo implode(array_values($value));
+                $nilai1 = $value['count'];
+                //  print_r ($value['count']);
+                // print_r($nilai1);
+             } else {
+                // $value = 2
+                echo 'kosong';
+             }
+            //  echo ",";
+             $nilai2 = [];
+            }foreach ($sqlPark as $key=>$value) {
+                if ($value !== false) {
+                    $nilai2 = $value['count'];
+                    //  print_r ($value['count']);
+                    // print_r($nilai2);
+                } else {
+                   // $value = 2
+                   echo 'kosong';
+                }
+               }
+            //    echo ",";
+               $nilai3 = [];
+               foreach ($sqlOther as $key=>$value) {
+                if ($value !== false) {
+                    $nilai3 = $value['count'];
+                    //  print_r ($value['count']);
+                    // print_r($nilai3);
+                } else {
+                   // $value = 2
+                   echo 'kosong';
+                }
+               }
+            
+}
+$nilai = array($nilai1.",".$nilai2.",".$nilai3);
+// $nilaix = $nilai;
+// $nilaiZ = [$nilai.""];
+// echo implode($nilai);
+// print_r($nilai);
+}
+// }
+// */
+
+
+// $place = $sqlPlace->fetchAll();
+    //          foreach ($place as $value) {
+    //          if ($value !== false) {
+    //              echo implode($value);
+    //          } else {
+    //             // $value = 2
+    //             echo 'kosong';
+    //          }
+    //         }
 
 ?>
+
+<?php
+//------------------------------------------------------------------------------------
+//?Coba TOPSIS without database, no iteration maybe
+echo "<br>";
+// $alternatif = array(); //array("Galaxy", "iPhone", "BB", "Lumia");
+$alternatif = array("kos1", "kos2", "kos3");
+//?Nama Kos
+
+// $queryalternatif = mysql_query("SELECT * FROM pemilik ORDER BY id_pemilik");
+// $i=0;
+// while ($dataalternatif = mysql_fetch_array($queryalternatif))
+// {
+//     $alternatif[$i] = $dataalternatif['nama_kos'];
+//     $i++;
+// } 
+//? While loop pencarian nama kos
+
+// $kriteria = array(); //array("Harga", "Kualitas", "Fitur", "Populer", "Purna Jual", "Keawetan");
+$kriteria = array("Harga", "Kualitas", "Fitur","asd","sfsd");
+//? Kriteria hanya banyaknya tiap fasilitas 
+
+// $costbenefit = array(); //array("cost", "benefit", "benefit", "benefit", "benefit", "benefit");
+$costbenefit = array("benefit", "benefit", "cost", "benefit", "cost");
+//? Hanya benefit
+
+// $kepentingan = array(); //array(4, 5, 4, 3, 3, 2);
+$kepentingan = array(5, 4, 4, 3, 4);
+//?Sudah didapat dari Analisis SIG
+
+// $querykriteria = mysql_query("SELECT * FROM kriteria ORDER BY id_kriteria");
+// $i=0;
+// while ($datakriteria = mysql_fetch_array($querykriteria))
+// {
+//     $kriteria[$i] = $datakriteria['nama_kriteria'];
+//     $costbenefit[$i] = $datakriteria['atribut'];
+//     $kepentingan[$i] = @$_POST['kepentingan'.$datakriteria['id_kriteria']]; //$datakriteria['kepentingan'];
+//     $i++;
+// }
+//? While loop untuk mendapatkan kepentingan, tapi Sudah didapat dari Analisis SIG
+
+
+$alternatifkriteria = array(
+    array(4, 2000, 5000, 3, 1),              
+    array(2, 5000, 2000, 4, 4),                                             
+    array(3, 4000, 3000, 4, 3)
+    
+  );
+                         /* array(
+                            array(3, 2, 3, 2, 2, 2),              
+                            array(4500, 90, 10, 60, 2500, 48),                                             
+                            array(4000, 80, 9, 90, 2000, 48),                                                                           
+                            array(4000, 70, 8, 50, 1500, 60)
+                          ); */
+                          //? Array dalam array
+    
+    // $queryalternatif = mysql_query("SELECT * FROM pemilik ORDER BY id_pemilik");
+    // $i=0;
+    // while ($dataalternatif = mysql_fetch_array($queryalternatif))
+    // {
+    //     $querykriteria = mysql_query("SELECT * FROM kriteria ORDER BY id_kriteria");
+    //     $j=0;
+    //     while ($datakriteria = mysql_fetch_array($querykriteria))
+    //     {
+    //         $queryalternatifkriteria = mysql_query("SELECT * FROM analisa WHERE id_pemilik = '$dataalternatif[id_pemilik]' AND id_kriteria = '$datakriteria[id_kriteria]'");
+    //         $dataalternatifkriteria = mysql_fetch_array($queryalternatifkriteria);
+            
+    //         $alternatifkriteria[$i][$j] = $dataalternatifkriteria['nilainya'];
+    //         $j++;
+    //     }
+    //     $i++;
+    // }
+    
+    //? While loop untuk mendapatkan semua jumlah fasilitas dari semua kos, PENGAMBILAN dari database tabel analisis, mungkin kalo kasus ini dari analisis SIG diatas ya?
+
+    $pembagi = array();
+    
+    for ($i=0;$i<count($kriteria);$i++)    
+    //? dihitung dari jumlah kriteria, dalam kasus ini yaitu nilai1, nilai2 dst
+    {
+        $pembagi[$i] = 0;
+        for ($j=0;$j<count($alternatif);$j++)
+        //? dihitung dari tiap kos yang ada
+        {
+            $pembagi[$i] = $pembagi[$i] + ($alternatifkriteria[$j][$i] * $alternatifkriteria[$j][$i]);
+        }
+        $pembagi[$i] = sqrt($pembagi[$i]);
+        // echo implode($pembagi);
+        // print_r($pembagi);
+    }
+    // echo implode($pembagi);
+    // print_r($pembagi);
+
+
+    $normalisasi = array();
+    
+    for ($i=0;$i<count($alternatif);$i++)
+    {
+        for ($j=0;$j<count($kriteria);$j++)
+        {
+            $normalisasi[$i][$j] = $alternatifkriteria[$i][$j] / $pembagi[$j];
+        }
+        
+    }
+
+    // print_r($normalisasi);
+
+    $terbobot = array();
+    
+    for ($i=0;$i<count($alternatif);$i++)
+    {
+        for ($j=0;$j<count($kriteria);$j++)
+        {
+            $terbobot[$i][$j] = $normalisasi[$i][$j] * $kepentingan[$j];
+        }
+    }
+
+    // print_r($terbobot);
+
+    $aplus = array();
+    
+    for ($i=0;$i<count($kriteria);$i++)
+    {
+        if ($costbenefit[$i] == 'cost')
+        {
+            for ($j=0;$j<count($alternatif);$j++)
+            {
+                if ($j == 0) 
+                { 
+                    $aplus[$i] = $terbobot[$j][$i];
+                }
+                else 
+                {
+                    if ($aplus[$i] > $terbobot[$j][$i])
+                    {
+                        $aplus[$i] = $terbobot[$j][$i];
+                    }
+                }
+            }
+        }
+        else 
+        {
+            for ($j=0;$j<count($alternatif);$j++)
+            {
+                if ($j == 0) 
+                { 
+                    $aplus[$i] = $terbobot[$j][$i];
+                }
+                else 
+                {
+                    if ($aplus[$i] < $terbobot[$j][$i])
+                    {
+                        $aplus[$i] = $terbobot[$j][$i];
+                    }
+                }
+            }
+        }
+    }
+
+    print_r($aplus);
+
+    $amin = array();
+    
+    for ($i=0;$i<count($kriteria);$i++)
+    {
+        if ($costbenefit[$i] == 'cost')
+        {
+            for ($j=0;$j<count($alternatif);$j++)
+            {
+                if ($j == 0) 
+                { 
+                    $amin[$i] = $terbobot[$j][$i];
+                }
+                else 
+                {
+                    if ($amin[$i] < $terbobot[$j][$i])
+                    {
+                        $amin[$i] = $terbobot[$j][$i];
+                    }
+                }
+            }
+        }
+        else 
+        {
+            for ($j=0;$j<count($alternatif);$j++)
+            {
+                if ($j == 0) 
+                { 
+                    $amin[$i] = $terbobot[$j][$i];
+                }
+                else 
+                {
+                    if ($amin[$i] > $terbobot[$j][$i])
+                    {
+                        $amin[$i] = $terbobot[$j][$i];
+                    }
+                }
+            }
+        }
+    }
+
+    print_r($amin);
+    
+//     $pembagi0 = 0;
+    
+//     $alternatifkriteria0 = array(4,2,3);
+    
+//     for ($j=0;$j<count($alternatifkriteria0);$j++){
+//         $pembagi0 = $pembagi0 + ($alternatifkriteria0[$j] * $alternatifkriteria0[$j]);
+//     }        
+   
+//     $pembagi0 = sqrt($pembagi0)."___";
+//     print_r($pembagi0); 
+
+//     $pembagi1 = array();
+
+//     $alternatifkriteria1 = array(
+//         array(2, 1, 1),              
+//         array(2, 1, 1),                                             
+//         array(2, 1, 0),                                                                           
+//         array(2, 0, 6),
+//         array(1, 2, 0)
+        
+//       );
+//     for ($i=0;$i<count($kriteria);$i++){ 
+//         $pembagi1[$i] = 0;
+//     for ($j=0;$j<count($alternatifkriteria1);$j++){
+//         $pembagi1[$i] = $pembagi1[$i] + ($alternatifkriteria1[$j][$i] * $alternatifkriteria1[$j][$i]);
+//         // echo "_";
+//     }
+//     // echo "<br>";
+//     $pembagi1[$i] = sqrt($pembagi1[$i]);
+//     // echo implode($pembagi1);
+//     // print_r($pembagi);
+// }
+//------------------------------------------------------------------------------------
+?>
+
 
 
 
