@@ -50,7 +50,7 @@
 
     $db = new PDO('pgsql:host=localhost;port=5432;dbname=webmap101;', 'postgres', 'Farhan7');
 
-    $sql1 = $db->prepare("SELECT ST_X(geom) as longitude FROM cdmx_attractions");
+    // $sql1 = $db->prepare("SELECT ST_X(geom) as longitude FROM cdmx_attractions");
     // $sql = $db->prepare("SELECT id, name, category,ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(ST_X(geom), ST_Y(geom))::geography, 100000)");
 
     // $longitude2 = ['items' => ['127.0492', '127.1492','127.4492' ]];
@@ -58,11 +58,11 @@
     //$params = ["lng"=>$longitude, "lat"=>$latitude];
     //  $params = ["lng"=>['127.0492','127.1492'], "lat"=>['37.51572','37.11572']];
 
-    $sql1->execute();
+    // $sql1->execute();
 
 
     // echo "<br>";
-    $sql2 = $db->prepare("SELECT ST_Y(geom) as latitude FROM cdmx_attractions");
+    // $sql2 = $db->prepare("SELECT ST_Y(geom) as latitude FROM cdmx_attractions");
     // $sql = $db->prepare("SELECT id, name, category,ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(ST_X(geom), ST_Y(geom))::geography, 100000)");
 
     // $longitude2 = ['items' => ['127.0492', '127.1492','127.4492' ]];
@@ -70,19 +70,19 @@
     //$params = ["lng"=>$longitude, "lat"=>$latitude];
     //  $params = ["lng"=>['127.0492','127.1492'], "lat"=>['37.51572','37.11572']];
 
-    $sql2->execute();
+    // $sql2->execute();
 
     // echo "<br>";
-    $sql3_2 = $db->prepare("SELECT id, name, category,ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000)");
+    // $sql3_2 = $db->prepare("SELECT id, name, category,ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000)");
 
-    $sql3 = $db->prepare("SELECT id, name, category,ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000 AND category = 'Park')");
+    // $sql3 = $db->prepare("SELECT id, name, category,ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000 AND category = 'Park')");
 
-    $sql4 = $db->prepare("SELECT id, name, category, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE category = 'Place'");
+    $sql4 = $db->prepare("SELECT id, name, category, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE category = 'Other'");
     $sql4->execute();
 
     $sqlPark = $db->prepare("SELECT count(category)FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000) AND category = 'Park'");
-    $sqlPlace = $db->prepare("SELECT count(category)FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000) AND category = 'Place'");
-    $sqlOther = $db->prepare("SELECT count(category)FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000) AND category = 'Other'");
+    $sqlPlace = $db->prepare("SELECT count(category)FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 2000) AND category = 'Place'");
+    $sqlOther = $db->prepare("SELECT count(category)FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 10000) AND category = 'Other'");
 
     /*
 while ($row = $sql4->fetch(PDO::FETCH_ASSOC)) {
@@ -183,6 +183,8 @@ while ($row = $sql3_2->fetch(PDO::FETCH_ASSOC)) {
 
         $longitude = [$long];
         $latitude = [$lati];
+        // print_r($longitude);
+        // print_r($latitude);
 
         foreach ($longitude as $lng) {
             $lng . "<br>";
@@ -235,15 +237,61 @@ while ($row = $sql3_2->fetch(PDO::FETCH_ASSOC)) {
                 }
             }
         }
-        $nilai = array($nilai1 . "," . $nilai2 . "," . $nilai3);
+        // $nilai = array($nilai1 . "," . $nilai2 . "," . $nilai3);
+        $nilaiXY = implode(array($nilai2 . "," . $nilai2 . "," . $nilai2));
         // $nilaix = $nilai;
-        // $nilaiZ = [$nilai.""];
-        // echo implode($nilai);
-        // print_r($nilai);
+        // $nilaiZ = [$nilai . ""];
+        // echo implode($nilaiXY);
+        // print_r($nilaiXY);
+        // print_r($longitude);
+        // print_r($latitude);
+        // print_r(explode(',', $nilaiXY));
+
+
+        $alternatif = array("kos1", "kos2", "kos3");
+
+        $kriteria = array("Harga", "Kualitas", "Fitur", "asd", "sfsd");
+        //? Kriteria hanya banyaknya tiap fasilitas 
+
+        $costbenefit = array("benefit", "benefit", "cost", "benefit", "cost");
+        //? Hanya benefit
+
+
+        $kepentingan = array(5, 4, 4, 3, 4);
+        //?Sudah didapat dari Analisis SIG
+
+        $alternatifkriteria = array(explode(',', $nilaiXY));
+
+        // foreach ($alternatifkriteria as $char) {
+        //     print_r(array($char));
+        // }
+        // foreach ($alternatifkriteria as $key => $value) {
+        //     print_r(array($value));
+        // }
+
+
+
+        // foreach ($alternatifkriteria as $char) {
+        //     print_r(array($char));
+        // }
+
+
+
+
+
+        // print_r($alternatifkriteria);
+
+        // echo preg_replace(
+        //     '/(^Array|^\\(\n|^\\)\n|^\s*)/m',
+        //     '',
+        //     print_r($alternatifkriteria, true)
+        // );
     }
     // }
     // */
-
+    echo "<br>";
+    print_r("---END---");
+    echo "<br>";
 
     // $place = $sqlPlace->fetchAll();
     //          foreach ($place as $value) {
@@ -297,13 +345,14 @@ $kepentingan = array(5, 4, 4, 3, 4);
 // }
 //? While loop untuk mendapatkan kepentingan, tapi Sudah didapat dari Analisis SIG
 
-
+echo "ini baru bener";
 $alternatifkriteria = array(
-    array(4, 2000, 5000, 3, 1),
-    array(2, 5000, 2000, 4, 4),
-    array(3, 4000, 3000, 4, 3)
+    array($nilai2, 2000, 5000, $nilai2, $nilai2),
+    array($nilai2, 5000, 2000, $nilai2, $nilai2),
+    array($nilai2, 4000, 3000, $nilai2, $nilai2)
 
 );
+print_r($alternatifkriteria);
 /* array(
                             array(3, 2, 3, 2, 2, 2),              
                             array(4500, 90, 10, 60, 2500, 48),                                             
