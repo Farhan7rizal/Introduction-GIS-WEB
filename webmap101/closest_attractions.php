@@ -1,5 +1,5 @@
  <?php
-
+echo "HIIIII";
     // if(isset($_POST['latitude']) && is_numeric($_POST['latitude'])){
     //     $latitude=$_POST['latitude'];
     // } else {
@@ -80,9 +80,9 @@
     $sql4 = $db->prepare("SELECT id, name, category, ST_X(geom) as longitude, ST_Y(geom) as latitude FROM cdmx_attractions WHERE category = 'Other'");
     $sql4->execute();
 
-    $sqlPark = $db->prepare("SELECT count(category)FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000) AND category = 'Park'");
-    $sqlPlace = $db->prepare("SELECT count(category)FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 2000) AND category = 'Place'");
-    $sqlOther = $db->prepare("SELECT count(category)FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 10000) AND category = 'Other'");
+    $sqlPark = $db->prepare("SELECT count(category)FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 100000) AND category = 'Kampus'");
+    $sqlPlace = $db->prepare("SELECT count(category)FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 2000) AND category = 'Rumah Makan'");
+    $sqlOther = $db->prepare("SELECT count(category)FROM cdmx_attractions WHERE ST_DWithin(geom, ST_MakePoint(:lng, :lat)::geography, 10000) AND category = 'Tempat Ibadah'");
 
     /*
 while ($row = $sql4->fetch(PDO::FETCH_ASSOC)) {
@@ -236,62 +236,97 @@ while ($row = $sql3_2->fetch(PDO::FETCH_ASSOC)) {
                     echo 'kosong';
                 }
             }
+            // $int1 = (int)$nilai1;
+            // $int2 = (int)$nilai2;
+            // $int3 = (int)$nilai3;
+            // $nilai = array($nilai1 . "," . $nilai2 . "," . $nilai3);
+            $nilaiXY = implode(array($nilai1 . "," . $nilai2 . "," . $nilai3));
+            // $nilaix = $nilai;
+            // $nilaiZ = [$nilai . ""];
+            // echo implode($nilaiXY);
+            // print_r($nilai2);
+            // print_r($longitude);
+            // print_r($latitude);
+            // print_r(explode(',', $nilaiXY));
+            // var_dump($nilaiXY);
+
+            // $alternatifkriteria = array(
+            //     array($nilai2, 2000, 5000, $nilai2, $nilai2)
+
+
+            // );
+            // var_dump($nilaiXY);
+
+
+            $alternatif = array("kos1", "kos2", "kos3");
+
+            $kriteria = array("Harga", "Kualitas", "Fitur", "asd", "sfsd");
+            //? Kriteria hanya banyaknya tiap fasilitas 
+
+            $costbenefit = array("benefit", "benefit", "cost", "benefit", "cost");
+            //? Hanya benefit
+
+
+            $kepentingan = array(5, 4, 4, 3, 4);
+            //?Sudah didapat dari Analisis SIG
+
+            // $result_array = array();
+            // $strings_array = explode(',', $nilaiXY);
+
+            // foreach ($strings_array as $each_number) {
+            //     $result_array[] = (int) $each_number;
+            // }
+            // // print_r($result_array);
+            // print_r($strings_array);
+
+
+
+            // $alternatifkriteria = array(explode(',', $nilaiXY));
+
+            // foreach ($alternatifkriteria as $arr) {
+            //     // echo '<a href="' . $arr[0] . '">' . $arr[1] . '</a>';
+            //     var_dump($arr1);
+            // }
+
+            $alternatifkriteria = array_map('intval', explode(',', $nilaiXY));
+            // print_r($alternatifkriteria);
+
+            // foreach ($alternatifkriteria as $char) {
+            //     print_r(array($char));
+            // }
+            // foreach ($alternatifkriteria as $key => $value) {
+            //     print_r(array($value));
+            // }
+
+
+
+            // foreach ($alternatifkriteria as $char) {
+            //     print_r(array($char));
+            // }
+
+
+
+
+
+            // var_dump($alternatifkriteria);
+
+            // echo preg_replace(
+            //     '/(^Array|^\\(\n|^\\)\n|^\s*)/m',
+            //     '',
+            //     print_r($alternatifkriteria, true)
+            // );
+
+            $alternatifkriteria2 = [
+                $alternatifkriteria
+
+            ];
+            print_r($alternatifkriteria2);
         }
-        // $nilai = array($nilai1 . "," . $nilai2 . "," . $nilai3);
-        $nilaiXY = implode(array($nilai2 . "," . $nilai2 . "," . $nilai2));
-        // $nilaix = $nilai;
-        // $nilaiZ = [$nilai . ""];
-        // echo implode($nilaiXY);
-        // print_r($nilaiXY);
-        // print_r($longitude);
-        // print_r($latitude);
-        // print_r(explode(',', $nilaiXY));
-
-
-        $alternatif = array("kos1", "kos2", "kos3");
-
-        $kriteria = array("Harga", "Kualitas", "Fitur", "asd", "sfsd");
-        //? Kriteria hanya banyaknya tiap fasilitas 
-
-        $costbenefit = array("benefit", "benefit", "cost", "benefit", "cost");
-        //? Hanya benefit
-
-
-        $kepentingan = array(5, 4, 4, 3, 4);
-        //?Sudah didapat dari Analisis SIG
-
-        $alternatifkriteria = array(explode(',', $nilaiXY));
-
-        // foreach ($alternatifkriteria as $char) {
-        //     print_r(array($char));
-        // }
-        // foreach ($alternatifkriteria as $key => $value) {
-        //     print_r(array($value));
-        // }
-
-
-
-        // foreach ($alternatifkriteria as $char) {
-        //     print_r(array($char));
-        // }
-
-
-
-
-
-        // print_r($alternatifkriteria);
-
-        // echo preg_replace(
-        //     '/(^Array|^\\(\n|^\\)\n|^\s*)/m',
-        //     '',
-        //     print_r($alternatifkriteria, true)
-        // );
     }
     // }
     // */
     echo "<br>";
-    print_r("---END---");
-    echo "<br>";
+    
 
     // $place = $sqlPlace->fetchAll();
     //          foreach ($place as $value) {
@@ -308,9 +343,9 @@ while ($row = $sql3_2->fetch(PDO::FETCH_ASSOC)) {
 <?php
 //------------------------------------------------------------------------------------
 //?Coba TOPSIS without database, no iteration maybe
-echo "<br>";
+
 // $alternatif = array(); //array("Galaxy", "iPhone", "BB", "Lumia");
-$alternatif = array("kos1", "kos2", "kos3");
+$alternatif = array("kos1", "kos2", "kos3", "Kos4", "Kos5");
 //?Nama Kos
 
 // $queryalternatif = mysql_query("SELECT * FROM pemilik ORDER BY id_pemilik");
@@ -345,14 +380,22 @@ $kepentingan = array(5, 4, 4, 3, 4);
 // }
 //? While loop untuk mendapatkan kepentingan, tapi Sudah didapat dari Analisis SIG
 
-echo "ini baru bener";
-$alternatifkriteria = array(
-    array($nilai2, 2000, 5000, $nilai2, $nilai2),
-    array($nilai2, 5000, 2000, $nilai2, $nilai2),
-    array($nilai2, 4000, 3000, $nilai2, $nilai2)
+echo "<br>";
+// $alternatifkriteria = array(
+//     array($nilai2, 2000, 5000, $nilai2, $nilai2),
+//     array($nilai2, 5000, 2000, $nilai2, $nilai2),
+//     array($nilai2, 4000, 3000, $nilai2, $nilai2)
 
-);
+// );
+
+$alternatifkriteria = [
+    [$nilai2, 2000, 5000, $nilai2, $nilai2],
+    [$nilai2, 5000, 2000, $nilai2, $nilai2],
+    [$nilai2, 4000, 3000, $nilai2, $nilai2]
+];
+
 print_r($alternatifkriteria);
+echo "<br><br>";
 /* array(
                             array(3, 2, 3, 2, 2, 2),              
                             array(4500, 90, 10, 60, 2500, 48),                                             
@@ -446,6 +489,7 @@ for ($i = 0; $i < count($kriteria); $i++) {
 }
 
 print_r($aplus);
+echo "<br><br>";
 
 $amin = array();
 
@@ -474,6 +518,7 @@ for ($i = 0; $i < count($kriteria); $i++) {
 }
 
 print_r($amin);
+echo "<br><br>";
 
 $dplus = array();
 
@@ -486,6 +531,7 @@ for ($i = 0; $i < count($alternatif); $i++) {
 }
 
 print_r($dplus);
+echo "<br><br>";
 
 $dmin = array();
 
@@ -498,6 +544,7 @@ for ($i = 0; $i < count($alternatif); $i++) {
 }
 
 print_r($dmin);
+echo "<br><br>";
 
 $hasil = array();
 
@@ -505,6 +552,7 @@ for ($i = 0; $i < count($alternatif); $i++) {
     $hasil[$i] = $dmin[$i] / ($dmin[$i] + $dplus[$i]);
 }
 print_r($hasil);
+echo "<br><br>";
 
 $alternatifrangking = array();
 $hasilrangking = array();
@@ -514,7 +562,9 @@ for ($i = 0; $i < count($alternatif); $i++) {
     $alternatifrangking[$i] = $alternatif[$i];
 }
 print_r($hasilrangking);
+echo "<br><br>";
 print_r($alternatifrangking);
+echo "<br><br>";
 
 for ($i = 0; $i < count($alternatif); $i++) {
     for ($j = $i; $j < count($alternatif); $j++) {
@@ -529,6 +579,7 @@ for ($i = 0; $i < count($alternatif); $i++) {
     }
 }
 print_r($alternatifrangking);
+echo "<br><br>";
 
 //     $pembagi0 = 0;
 
