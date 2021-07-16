@@ -1,3 +1,16 @@
+<?php include("../includes/init.php"); ?>
+<?php
+if (logged_in()) {
+    $username = $_SESSION['username'];
+    if (!verify_user_group($pdo, $username, "DJ Basin Client")) {
+        set_msg("User '{$username}' does not have permission to view this page");
+        redirect('../index.php');
+    }
+} else {
+    set_msg("Please log-in and try again");
+    redirect('../index.php');
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 

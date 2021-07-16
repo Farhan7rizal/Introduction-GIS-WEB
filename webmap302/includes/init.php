@@ -8,7 +8,7 @@ $opt = [
     PDO::ATTR_EMULATE_PREPARES      => false
 ];
 $pdo = new PDO($dsn, 'postgres', 'Farhan7', $opt);
-echo "Connected to Database!!!";
+// echo "Connected to Database!!!";
 
 $root_directory = "SINI/Introduction GIS WEB/webmap302";
 $from_email = "Farhan48rizal@gmail.com";
